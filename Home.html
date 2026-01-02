@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/STATIC/Images/icons/trimly logo.svg"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Sora:wght@100..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/STATIC/CSS/Home.css" />
+    <title>Home</title>
+  </head>
+  <body>
+    <div class="app-container">
+      <div id="mobile-overlay"></div>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-area">
+            <span class="logo-text">Trimly</span>
+            <!-- note: there are two visual toggles (sidebar icon & hamburger), JS handles both -->
+            <i class="nav-icon sidebar-toggle-icon">
+              <img src="/STATIC/Images/icons/trimly logo.svg" alt="" />
+            </i>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <a href="Home.html" class="nav-item active">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/Vector.svg" alt=""
+            /></i>
+            <span class="nav-label">Home</span>
+          </a>
+          <a href="favourite.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/mynaui_heart.svg" alt=""
+            /></i>
+            <span class="nav-label">Favourite</span>
+          </a>
+          <a href="message.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/message.svg" alt=""
+            /></i>
+            <span class="nav-label">Messages</span>
+          </a>
+          <a href="booking.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/bookings.svg" alt=""
+            /></i>
+            <span class="nav-label">Bookings</span>
+          </a>
+          <a href="setting.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/settings.svg" alt=""
+            /></i>
+            <span class="nav-label">Settings</span>
+          </a>
+        </nav>
+
+        <div class="social-icons">
+          <a href="#"
+            ><i><img src="/STATIC/Images/fb.svg" alt="" /></i
+          ></a>
+          <a href="#"
+            ><i><img src="/STATIC/Images/icons/ig.svg" alt="" /></i
+          ></a>
+          <a href="#"
+            ><i><img src="/STATIC/Images/icons/x.svg" alt="" /></i
+          ></a>
+          <a href="#"
+            ><i><img src="/STATIC/Images/icons/messenger.svg" alt="" /></i
+          ></a>
+        </div>
+      </aside>
+
+      <!-- HAMBURGER BUTTON -->
+      <button
+        id="hamburger-btn"
+        class="hamburger-btn"
+        aria-label="Toggle sidebar"
+      >
+        <img src="/STATIC/Images/icons/trimly logo.svg" alt="menu" />
+      </button>
+
+      <!-- MAIN -->
+      <main class="main-content">
+        <header class="top-bar">
+          <div class="search-container">
+            <i style="font-size: 18px; color: rgba(0, 0, 0, 1)"
+              ><img src="/STATIC/Images/search.svg" alt=""
+            /></i>
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search"
+              aria-label="Search barbers"
+            />
+          </div>
+
+          <div class="notificationwithprofile">
+            <div class="notifications">
+              <img
+                src="/STATIC/Images/icons/notificatiion.svg"
+                alt="Notifications"
+              />
+              <span
+                class="notification-badge"
+                data-count="0"
+                id="notificationCount"
+                >0</span
+              >
+            </div>
+
+            <div class="profile">
+              <div class="avatar avatar-image">T</div>
+            </div>
+          </div>
+        </header>
+
+        <div class="content-scroll-area">
+          <div class="filters-row">
+            <div class="filters">
+              <div class="select-wrapper">
+                <img
+                  src="/STATIC/Images/icons/location.svg"
+                  alt=""
+                  class="select-icon"
+                />
+                <select
+                  id="filter-location"
+                  class="filter-chip"
+                  aria-label="Filter by location"
+                >
+                  <option value="">Location</option>
+                  <option value="Lagos">Lagos</option>
+                  <option value="Abuja">Abuja</option>
+                  <option value="Ibadan">Ibadan</option>
+                </select>
+              </div>
+
+              <div class="select-wrapper">
+                <img
+                  src="/STATIC/Images/icons/verification.svg"
+                  alt=""
+                  class="select-icon"
+                />
+                <select
+                  id="filter-rating"
+                  class="filter-chip"
+                  aria-label="Filter by rating"
+                >
+                  <option value="">Ratings</option>
+                  <option value="4.5">4.5+ Stars</option>
+                  <option value="4.0">4.0+ Stars</option>
+                  <option value="3.0">3.0+ Stars</option>
+                </select>
+              </div>
+
+              <div class="select-wrapper">
+                <img
+                  src="/STATIC/Images/icons/tdesign_money.svg"
+                  alt=""
+                  class="select-icon"
+                />
+                <select
+                  id="filter-price"
+                  class="filter-chip"
+                  aria-label="Filter by price"
+                >
+                  <option value="">Price range</option>
+                  <option value="low">$0 - $20</option>
+                  <option value="mid">$20 - $50</option>
+                  <option value="high">$50+</option>
+                </select>
+              </div>
+
+              <div class="select-wrapper">
+                <input
+                  type="date"
+                  id="filter-date"
+                  min="${new Date().toISOString().split('T')[0]}"
+                  class="date-filter"
+                />
+              </div>
+
+              <div class="select-wrapper">
+                <img
+                  src="/STATIC/Images/icons/verification.svg"
+                  alt=""
+                  class="select-icon"
+                />
+                <select
+                  id="filter-verification"
+                  class="filter-chip"
+                  aria-label="Filter by verification"
+                >
+                  <option value="">Verification</option>
+                  <option value="verified">Verified Only</option>
+                  <option value="all">Show All</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="clear">
+              <button class="clear-filters-btn" id="clearFiltersBtn">
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          <h2 class="section-title">All Barbers</h2>
+
+          <div class="barber-grid" id="barber-grid-mount" aria-live="polite">
+            <!-- Barber cards inserted here -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      /* ----------------------------
+                 DATA: barbers (with verified)
+                 ---------------------------- */
+      const barbers = {
+        1: {
+          id: "1",
+          name: "Ariyo barbing services",
+          img: "/STATIC/Images/e3e57f5dd5ab20b760d3f389da7910e955587728.jpg",
+          location: "Lagos",
+          rating: 4.8,
+          amount: 5000,
+          desc: "Premium Lagos barbershop known for sharp fades, afro grooming, and clean modern cuts.",
+          verified: true,
+          priceTier: "mid",
+          availability: [17, 24, 19, 29, 27, 5, 1, 22, 6, 10],
+
+          reviews: [
+            {
+              name: "David Adepoju",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 5,
+              date: "June 10, 2025",
+              text: "Amazing service! My fade came out clean and sharp. Easily one of the best barbers in Lagos.",
+            },
+            {
+              name: "Michael Femi",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 4,
+              date: "June 5, 2025",
+              text: "Good attention to detail. The shop was neat and he kept to time.",
+            },
+            {
+              name: "Tunde Ilori",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 5,
+              date: "May 28, 2025",
+              text: "Best haircut I've had in months. Highly recommended.",
+            },
+          ],
+
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+
+        2: {
+          id: "2",
+          name: "Fola barbing services",
+          img: "/STATIC/Images/51dff4b5b6c4b24a89fc357e76ddb4bffa5f60cb.jpg",
+          location: "Abuja",
+          rating: 3.0,
+          amount: 2500,
+          desc: "Affordable neighborhood barbershop offering simple, clean haircuts at great value.",
+          verified: false,
+          priceTier: "low",
+          availability: [16, 1, 3, 23, 7, 22, 19, 26, 25, 11],
+
+          reviews: [
+            {
+              name: "Chibuzo Kingsley",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 3,
+              date: "May 12, 2025",
+              text: "Decent cut. Could improve timing but overall fair.",
+            },
+            {
+              name: "Aisha Bello",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 4,
+              date: "May 1, 2025",
+              text: "Pleasant service, friendly barber. Good pricing.",
+            },
+            {
+              name: "Yusuf Ahmed",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 2,
+              date: "April 20, 2025",
+              text: "Cut was okay but not exactly what I asked for.",
+            },
+          ],
+
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+
+        3: {
+          id: "3",
+          name: "Adebisi barbing services",
+          img: "/STATIC/Images/fd5eaeb566eaee245f79cac02879dbca4d66fb74.jpg",
+          location: "Ibadan",
+          rating: 4.2,
+          amount: 4000,
+          desc: "Professional Ibadan barber specializing in detailed fades, beard trims, and styling.",
+          verified: true,
+          priceTier: "mid",
+          availability: [16, 13, 20, 24, 6, 8, 21, 25, 17, 3],
+          reviews: [
+            {
+              name: "Kunle Owolabi",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 4,
+              date: "June 2, 2025",
+              text: "Very professional. My beard trim came out sharp.",
+            },
+            {
+              name: "Samuel Peters",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 5,
+              date: "May 27, 2025",
+              text: "Excellent work. Definitely coming back.",
+            },
+            {
+              name: "Ireti A.",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 4,
+              date: "May 10, 2025",
+              text: "Neat shop and good vibes. Loved the haircut.",
+            },
+          ],
+
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+
+        4: {
+          id: "4",
+          name: "African barbing services",
+          img: "/STATIC/Images/71954b1bf5bf641a949aa7d9565112e807cd9a25.jpg",
+          location: "Ibadan",
+          rating: 4.0,
+          amount: 6500,
+          desc: "Luxury grooming experience with premium tools, skilled barbers, and stylish ambience.",
+          verified: false,
+          priceTier: "high",
+          availability: [10, 12, 14, 16, 4, 13, 22, 15, 9, 1],
+
+          reviews: [
+            {
+              name: "Precious Daniel",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 4,
+              date: "June 9, 2025",
+              text: "Good service but a little pricey.",
+            },
+            {
+              name: "Emeka U.",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 5,
+              date: "June 1, 2025",
+              text: "Great haircut, worth the money.",
+            },
+            {
+              name: "Ola N.",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 3,
+              date: "May 19, 2025",
+              text: "Decent but expected a bit more for the price.",
+            },
+          ],
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+
+        5: {
+          id: "5",
+          name: "Ayodele barbing services",
+          img: "/STATIC/Images/89f0e267a3761a55a184609ef53967fc6beed6e6.jpg",
+          location: "Abuja",
+          rating: 3.5,
+          amount: 3000,
+          desc: "Quick and reliable barber service ideal for regular maintenance cuts and trims.",
+          verified: false,
+          priceTier: "low",
+          availability: [8, 21, 16, 7, 28, 30, 1, 6, 24, 13],
+
+          reviews: [
+            {
+              name: "Henry Okafor",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 4,
+              date: "June 3, 2025",
+              text: "Affordable and clean cut. Good value.",
+            },
+            {
+              name: "Sade Ojo",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 3,
+              date: "May 25, 2025",
+              text: "Okay haircut, nothing extraordinary.",
+            },
+            {
+              name: "Daniel O.",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 5,
+              date: "May 14, 2025",
+              text: "Excellent job. Will be returning.",
+            },
+          ],
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+
+        6: {
+          id: "6",
+          name: "Rise barbing services",
+          img: "/STATIC/Images/7e4c3695e25ee081e122f0dac2c4f7c7b0c3ccce.jpg",
+          location: "Lagos",
+          rating: 4.8,
+          amount: 8000,
+          desc: "High-end barbershop delivering premium fades, luxury grooming, and elite service.",
+          verified: true,
+          priceTier: "high",
+          availability: [21, 13, 11, 28, 22, 10, 5, 2, 18, 7],
+
+          reviews: [
+            {
+              name: "Favour Chinedu",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 5,
+              date: "June 8, 2025",
+              text: "Top-notch! The fade was perfect and the service was premium.",
+            },
+            {
+              name: "Olawale Ade",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 4,
+              date: "June 4, 2025",
+              text: "Loved the experience, great ambience.",
+            },
+            {
+              name: "Kelvin U.",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 5,
+              date: "May 29, 2025",
+              text: "Perfect haircut every time. Highly skilled barber.",
+            },
+          ],
+
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+      };
+
+      /* ----------------------------
+                 Utilities & State
+                 ---------------------------- */
+      const gridMount = document.getElementById("barber-grid-mount");
+      const searchInput = document.getElementById("searchInput");
+      const bc =
+        "BroadcastChannel" in window
+          ? new BroadcastChannel("trimly-favourites")
+          : null;
+
+      function getFavourites() {
+        try {
+          return JSON.parse(localStorage.getItem("favourites")) || [];
+        } catch (err) {
+          return [];
+        }
+      }
+
+      function setFavourites(arr) {
+        localStorage.setItem("favourites", JSON.stringify(arr));
+        localStorage.setItem("favourites_updated", Date.now());
+        if (bc) bc.postMessage({ type: "favourites_changed" });
+      }
+
+      function isFavourite(id) {
+        return getFavourites().includes(String(id));
+      }
+
+      /* ----------------------------
+                 RENDER: single barber card
+                 ---------------------------- */
+      function barberCardHTML(data) {
+        const fav = isFavourite(data.id);
+        const verifiedTick = data.verified
+          ? `<img src="/STATIC/Images/icons/verification-tick.svg" alt="verified tick" style="width:16px; vertical-align:middle; margin-left:6px;">`
+          : "";
+
+        // Use data-id attributes and a fav button with dataset for delegation
+        return `
+                  <a href="barber.html?id=${
+                    data.id
+                  }" style="display:block; color:inherit; text-decoration:none;">
+                    <article class="barber-card" data-id="${data.id}">
+                      <div class="card-image-wrapper">
+                        <img src="${
+                          data.img
+                        }" class="card-image" alt="${escapeHtml(data.name)}">
+                        <div class="status-dot"><div class="available" title="Available"></div></div>
+
+                        <button class="fav-btn" aria-label="${
+                          fav ? "Remove from favourites" : "Add to favourites"
+                        }" data-action="toggle-fav" data-id="${data.id}">
+                          <img src="${
+                            fav
+                              ? "/STATIC/Images/icons/Frame 1000009116 (1).png"
+                              : "/STATIC/Images/icons/Frame 1000009115.png"
+                          }" alt="heart">
+                        </button>
+                      </div>
+
+                      <div class="card-info">
+                        <div class="card-title" style="display:flex; gap:12px; align-items:flex-start;">
+                          <div class="barber-profile">
+                            <i class="verified-badge"><img src="/STATIC/Images/icons/barber-profile.png" alt=""></i>
+                          </div>
+
+                          <div class="barber-details" style="flex:1;">
+                            <h3 style="margin:0; font-size:1.05rem;">
+                              ${escapeHtml(data.name)} ${verifiedTick}
+                            </h3>
+                            <div class="card-meta">
+                              <span><i><img src="/STATIC/Images/icons/star.svg" alt="star" style="width:14px"></i> ${
+                                data.rating
+                              }</span>
+                              <span style="margin-left:12px;"><i><img src="/STATIC/Images/icons/typcn_location.svg" alt="location" style="width:14px"></i> ${
+                                data.location
+                              }</span>
+                              <span style="margin-left:12px; color:#888;">• ${capitalize(
+                                data.priceTier
+                              )}</span>
+                            </div>
+                            <p class="card-desc" style="margin-top:8px; color:#444;">${escapeHtml(
+                              data.desc
+                            )}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  </a>
+                `;
+      }
+
+      /* tiny helpers */
+      function capitalize(s) {
+        return (
+          String(s || "")
+            .charAt(0)
+            .toUpperCase() + String(s || "").slice(1)
+        );
+      }
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      /* ----------------------------
+                 FILTER + SEARCH + RENDER
+                 ---------------------------- */
+      function getFilterValues() {
+        return {
+          location: document.getElementById("filter-location").value || "",
+          rating: document.getElementById("filter-rating").value || "",
+          price: document.getElementById("filter-price").value || "",
+          date: document.getElementById("filter-date").value || "",
+          verification:
+            document.getElementById("filter-verification").value || "",
+          query: searchInput.value.trim().toLowerCase(),
+        };
+      }
+
+      function applyFiltersAndRender() {
+        const { location, rating, price, date, verification, query } =
+          getFilterValues();
+
+        // Build array of barber objects
+        const items = Object.keys(barbers).map((id) => barbers[id]);
+
+        const filtered = items.filter((b) => {
+          // location
+          if (location && b.location.toLowerCase() !== location.toLowerCase())
+            return false;
+
+          // rating
+          if (rating && b.rating < Number(rating)) return false;
+
+          // price
+          if (price && b.priceTier !== price) return false;
+
+          // availability (calendar picker)
+          if (date) {
+            const selectedDay = new Date(date).getDate();
+            if (!b.availability.includes(selectedDay)) return false;
+          }
+
+          // verification
+          if (verification === "verified" && !b.verified) return false;
+          // verification === "all" or "" => accept all
+
+          // search query
+          if (query) {
+            const hay = (
+              b.name +
+              " " +
+              b.location +
+              " " +
+              b.desc
+            ).toLowerCase();
+            if (!hay.includes(query)) return false;
+          }
+
+          return true;
+        });
+
+        // render
+        gridMount.innerHTML = "";
+        if (filtered.length === 0) {
+          gridMount.innerHTML = `<p style="text-align:center; color:#666; padding:30px 0;">No barbers found.</p>`;
+          return;
+        }
+
+        // Build HTML in one pass for performance
+        let html = "";
+        filtered.forEach((b) => {
+          html += barberCardHTML(b);
+        });
+        gridMount.innerHTML = html;
+      }
+
+      /* function showToast(text) {
+        const toast = document.getElementById("toast");
+        if (!toast) return;
+        toast.textContent = text;
+        toast.classList.add("show");
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2000);
+      }*/
+
+      /* ----------------------------
+                 FAVOURITES: toggle + update visuals
+                 ---------------------------- */
+      function toggleFavouriteById(id) {
+        id = String(id);
+        let favs = getFavourites();
+        const barberName = barbers[id]?.name || "Barber";
+
+        if (favs.includes(id)) {
+          favs = favs.filter((x) => x !== id);
+          showToast(`${barberName} is removed from favourite`);
+        } else {
+          favs.push(id);
+          showToast(`${barberName} is added to favourite`);
+        }
+
+        setFavourites(favs);
+        updateHeartIcons();
+      }
+
+      function updateHeartIcons() {
+        const favs = getFavourites().map(String);
+        document
+          .querySelectorAll('[data-action="toggle-fav"]')
+          .forEach((btn) => {
+            const id = btn.dataset.id;
+            const img = btn.querySelector("img");
+            if (!img) return;
+            if (favs.includes(String(id))) {
+              img.src = "/STATIC/Images/icons/Frame 1000009116 (1).png";
+              btn.setAttribute("aria-label", "Remove from favourites");
+            } else {
+              img.src = "/STATIC/Images/icons/Frame 1000009115.png";
+              btn.setAttribute("aria-label", "Add to favourites");
+            }
+          });
+      }
+
+      /* Delegated click handling for fav buttons */
+      gridMount.addEventListener("click", (ev) => {
+        const toggleBtn = ev.target.closest('[data-action="toggle-fav"]');
+        if (!toggleBtn) return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        const id = toggleBtn.dataset.id;
+        toggleFavouriteById(id);
+      });
+
+      /* ----------------------------
+                 FILTER / SEARCH listeners
+                 ---------------------------- */
+      [
+        "filter-location",
+        "filter-rating",
+        "filter-price",
+        "filter-verification",
+      ].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el)
+          el.addEventListener("change", () => {
+            applyFiltersAndRender();
+            updateHeartIcons();
+          });
+      });
+
+      //Filter date
+      document.getElementById("filter-date").addEventListener("change", () => {
+        applyFiltersAndRender();
+        updateHeartIcons();
+      });
+
+      // search
+      searchInput.addEventListener("input", () => {
+        applyFiltersAndRender();
+      });
+
+      // Clear filters
+      document
+        .getElementById("clearFiltersBtn")
+        .addEventListener("click", () => {
+          document.getElementById("filter-location").value = "";
+          document.getElementById("filter-rating").value = "";
+          document.getElementById("filter-price").value = "";
+          document.getElementById("filter-date").value = "";
+          document.getElementById("filter-verification").value = "";
+          searchInput.value = "";
+          applyFiltersAndRender();
+          updateHeartIcons();
+        });
+
+      /* ----------------------------
+                 SIDEBAR: toggle & overlay logic
+                 ---------------------------- */
+      const sidebar = document.getElementById("sidebar");
+      const hamburgerBtn = document.getElementById("hamburger-btn");
+      const overlay = document.getElementById("mobile-overlay");
+      // multiple toggle icons might exist
+      function getSidebarToggleElements() {
+        const arr = Array.from(
+          document.querySelectorAll(".sidebar-toggle-icon")
+        );
+        // also include hamburger icon if it should toggle collapsed state on desktop
+        return arr;
+      }
+
+      function toggleSidebar() {
+        const isMobile = window.innerWidth <= 1024;
+        if (isMobile) {
+          sidebar.classList.toggle("mobile-open");
+          if (sidebar.classList.contains("mobile-open")) {
+            overlay.style.display = "block";
+            setTimeout(() => (overlay.style.opacity = "1"), 10);
+          } else {
+            overlay.style.opacity = "0";
+            setTimeout(() => (overlay.style.display = "none"), 300);
+          }
+        } else {
+          sidebar.classList.toggle("collapsed");
+        }
+      }
+
+      // Attach toggle listeners
+      getSidebarToggleElements().forEach((el) =>
+        el.addEventListener("click", toggleSidebar)
+      );
+      hamburgerBtn.addEventListener("click", () => {
+        hamburgerBtn.classList.toggle("active");
+        toggleSidebar();
+      });
+
+      overlay.addEventListener("click", () => {
+        sidebar.classList.remove("mobile-open");
+        overlay.style.opacity = "0";
+        setTimeout(() => (overlay.style.display = "none"), 300);
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 768) {
+          sidebar.classList.remove("mobile-open");
+          overlay.style.display = "none";
+          overlay.style.opacity = "0";
+        }
+      });
+
+      /* ----------------------------
+                 Cross-tab sync: storage + BroadcastChannel + visibility/pageshow
+                 ---------------------------- */
+
+      // storage event (fires in other windows)
+      window.addEventListener("storage", (e) => {
+        if (e.key === "favourites" || e.key === "favourites_updated") {
+          // If filters/search are active, re-apply them; else re-render grid
+          applyFiltersAndRender();
+          updateHeartIcons();
+        }
+      });
+
+      // BroadcastChannel message
+      if (bc) {
+        bc.addEventListener("message", (ev) => {
+          if (ev?.data?.type === "favourites_changed") {
+            applyFiltersAndRender();
+            updateHeartIcons();
+          }
+        });
+      }
+
+      // When page becomes visible again or is restored from bfcache
+      window.addEventListener("pageshow", () => {
+        applyFiltersAndRender();
+        updateHeartIcons();
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+          applyFiltersAndRender();
+          updateHeartIcons();
+        }
+      });
+
+      /* ----------------------------
+                 Initialization
+                 ---------------------------- */
+      // initial render
+      applyFiltersAndRender();
+      updateHeartIcons();
+
+      // Expose for debugging (optional)
+      window.trimly = {
+        applyFiltersAndRender,
+        toggleFavouriteById,
+        getFavourites,
+      };
+
+      function isAvailableToday(barber) {
+        const today = new Date().getDate(); // e.g. 17
+        return barber.availability && barber.availability.includes(today);
+      }
+
+      function updateAllAvatars() {
+        const avatar = localStorage.getItem("trimly_avatar");
+        if (!avatar) return;
+
+        document.querySelectorAll(".avatar").forEach((el) => {
+          el.style.backgroundImage = `url(${avatar})`;
+          el.style.backgroundSize = "cover";
+          el.style.backgroundPosition = "center";
+          el.textContent = ""; // remove initials
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        updateAllAvatars();
+      });
+    </script>
+    <script src="./TrimlyNotifications.js"></script>
+    <div id="toast" class="toast"></div>
+  </body>
+</html>

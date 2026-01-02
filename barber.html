@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Sora:wght@100..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/STATIC/CSS/barber.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/STATIC/Images/icons/trimly logo.svg"
+    />
+    <title>Barber Profile</title>
+  </head>
+
+  <body>
+    <div class="app-container">
+      <div id="mobile-overlay"></div>
+      <!-- SIDEBAR -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-area">
+            <span class="logo-text">Trimly</span>
+            <i class="nav-icon sidebar-toggle-icon">
+              <img src="/STATIC/Images/icons/trimly logo.svg" alt="" />
+            </i>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <a href="Home.html" class="nav-item active">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/Vector.svg"
+            /></i>
+            <span class="nav-label">Home</span>
+          </a>
+
+          <a href="favourite.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/mynaui_heart.svg"
+            /></i>
+            <span class="nav-label">Favourite</span>
+          </a>
+
+          <a href="message.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/message.svg"
+            /></i>
+            <span class="nav-label">Messages</span>
+          </a>
+
+          <a href="booking.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/bookings.svg"
+            /></i>
+            <span class="nav-label">Bookings</span>
+          </a>
+
+          <a href="setting.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/settings.svg"
+            /></i>
+            <span class="nav-label">Settings</span>
+          </a>
+        </nav>
+
+        <div class="social-icons">
+          <a href="#"><img src="/STATIC/Images/fb.svg" /></a>
+          <a href="#"><img src="/STATIC/Images/icons/ig.svg" /></a>
+          <a href="#"><img src="/STATIC/Images/icons/x.svg" /></a>
+          <a href="#"><img src="/STATIC/Images/icons/messenger.svg" /></a>
+        </div>
+      </aside>
+
+      <!-- HAMBURGER -->
+      <button
+        id="hamburger-btn"
+        class="hamburger-btn"
+        aria-label="Toggle sidebar"
+      >
+        <img src="/STATIC/Images/icons/trimly logo.svg" alt="menu" />
+      </button>
+
+      <main class="main-content">
+        <header class="top-bar">
+          <div class="search-container">
+            <img src="/STATIC/Images/search.svg" />
+            <input id="searchBar" class="search-input" placeholder="Search" />
+          </div>
+
+            <div class="notificationwithprofile">
+            <div class="notifications">
+              <img
+                src="/STATIC/Images/icons/notificatiion.svg"
+                alt="Notifications"
+              />
+              <span
+                class="notification-badge"
+                data-count="0"
+                id="notificationCount"
+                >0</span
+              >
+            </div>
+
+            <div class="profile">
+              <div class="avatar avatar-image">T</div>
+            </div>
+          </div>
+        </header>
+
+        <div id="barber-container" class="content-scroll-area"></div>
+      </main>
+    </div>
+
+    <script>
+      const bc =
+        "BroadcastChannel" in window
+          ? new BroadcastChannel("trimly-favourites")
+          : null;
+
+      function getFavourites() {
+        try {
+          return JSON.parse(localStorage.getItem("favourites")) || [];
+        } catch {
+          return [];
+        }
+      }
+
+      function setFavourites(arr) {
+        localStorage.setItem("favourites", JSON.stringify(arr));
+        localStorage.setItem("favourites_updated", Date.now());
+        if (bc) bc.postMessage({ type: "favourites_changed" });
+      }
+
+      function toggleFavouriteById(id) {
+        id = String(id);
+        let favs = getFavourites();
+
+        if (favs.includes(id)) {
+          favs = favs.filter((x) => x !== id);
+        } else {
+          favs.push(id);
+        }
+
+        setFavourites(favs);
+      }
+
+      /************************
+       * 1. GET BARBER ID
+       ************************/
+      const params = new URLSearchParams(window.location.search);
+      const barberId = params.get("id");
+
+      
+
+      /************************
+       * 2. BARBERS DATABASE
+       ************************/
+      const barbers = {
+        1: {
+          id: "1",
+          name: "Ariyo barbing services",
+          img: "/STATIC/Images/e3e57f5dd5ab20b760d3f389da7910e955587728.jpg",
+          location: "Lagos",
+          rating: 4.8,
+          amount: 5000,
+          desc: "Premium Lagos barbershop known for sharp fades, afro grooming, and clean modern cuts.",
+          verified: true,
+          priceTier: "mid",
+          availability: [17, 24, 19, 29, 27, 5, 1, 22, 6, 10],
+
+          reviews: [
+            {
+              name: "David Adepoju",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 5,
+              date: "June 10, 2025",
+              text: "Amazing service! My fade came out clean and sharp. Easily one of the best barbers in Lagos.",
+            },
+            {
+              name: "Michael Femi",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 4,
+              date: "June 5, 2025",
+              text: "Good attention to detail. The shop was neat and he kept to time.",
+            },
+            {
+              name: "Tunde Ilori",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 5,
+              date: "May 28, 2025",
+              text: "Best haircut I've had in months. Highly recommended.",
+            },
+          ],
+
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+
+        2: {
+          id: "2",
+          name: "Fola barbing services",
+          img: "/STATIC/Images/51dff4b5b6c4b24a89fc357e76ddb4bffa5f60cb.jpg",
+          location: "Abuja",
+          rating: 3.0,
+          amount: 2500,
+          desc: "Affordable neighborhood barbershop offering simple, clean haircuts at great value.",
+          verified: false,
+          priceTier: "low",
+          availability: [16, 1, 3, 23, 7, 22, 19, 26, 25, 11],
+
+          reviews: [
+            {
+              name: "Chibuzo Kingsley",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 3,
+              date: "May 12, 2025",
+              text: "Decent cut. Could improve timing but overall fair.",
+            },
+            {
+              name: "Aisha Bello",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 4,
+              date: "May 1, 2025",
+              text: "Pleasant service, friendly barber. Good pricing.",
+            },
+            {
+              name: "Yusuf Ahmed",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 2,
+              date: "April 20, 2025",
+              text: "Cut was okay but not exactly what I asked for.",
+            },
+          ],
+
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+
+        3: {
+          id: "3",
+          name: "Adebisi barbing services",
+          img: "/STATIC/Images/fd5eaeb566eaee245f79cac02879dbca4d66fb74.jpg",
+          location: "Ibadan",
+          rating: 4.2,
+          amount: 4000,
+          desc: "Professional Ibadan barber specializing in detailed fades, beard trims, and styling.",
+          verified: true,
+          priceTier: "mid",
+          availability: [16, 13, 20, 24, 6, 8, 21, 25, 17, 3],
+          reviews: [
+            {
+              name: "Kunle Owolabi",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 4,
+              date: "June 2, 2025",
+              text: "Very professional. My beard trim came out sharp.",
+            },
+            {
+              name: "Samuel Peters",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 5,
+              date: "May 27, 2025",
+              text: "Excellent work. Definitely coming back.",
+            },
+            {
+              name: "Ireti A.",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 4,
+              date: "May 10, 2025",
+              text: "Neat shop and good vibes. Loved the haircut.",
+            },
+          ],
+
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+
+        4: {
+          id: "4",
+          name: "African barbing services",
+          img: "/STATIC/Images/71954b1bf5bf641a949aa7d9565112e807cd9a25.jpg",
+          location: "Ibadan",
+          rating: 4.0,
+          amount: 6500,
+          desc: "Luxury grooming experience with premium tools, skilled barbers, and stylish ambience.",
+          verified: false,
+          priceTier: "high",
+          availability: [10, 12, 14, 16, 4, 13, 22, 15, 9, 1],
+
+          reviews: [
+            {
+              name: "Precious Daniel",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 4,
+              date: "June 9, 2025",
+              text: "Good service but a little pricey.",
+            },
+            {
+              name: "Emeka U.",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 5,
+              date: "June 1, 2025",
+              text: "Great haircut, worth the money.",
+            },
+            {
+              name: "Ola N.",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 3,
+              date: "May 19, 2025",
+              text: "Decent but expected a bit more for the price.",
+            },
+          ],
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+
+        5: {
+          id: "5",
+          name: "Ayodele barbing services",
+          img: "/STATIC/Images/89f0e267a3761a55a184609ef53967fc6beed6e6.jpg",
+          location: "Abuja",
+          rating: 3.5,
+          amount: 3000,
+          desc: "Quick and reliable barber service ideal for regular maintenance cuts and trims.",
+          verified: false,
+          priceTier: "low",
+          availability: [8, 21, 16, 7, 28, 30, 1, 6, 24, 13],
+
+          reviews: [
+            {
+              name: "Henry Okafor",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 4,
+              date: "June 3, 2025",
+              text: "Affordable and clean cut. Good value.",
+            },
+            {
+              name: "Sade Ojo",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 3,
+              date: "May 25, 2025",
+              text: "Okay haircut, nothing extraordinary.",
+            },
+            {
+              name: "Daniel O.",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 5,
+              date: "May 14, 2025",
+              text: "Excellent job. Will be returning.",
+            },
+          ],
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+
+        6: {
+          id: "6",
+          name: "Rise barbing services",
+          img: "/STATIC/Images/7e4c3695e25ee081e122f0dac2c4f7c7b0c3ccce.jpg",
+          location: "Lagos",
+          rating: 4.8,
+          amount: 8000,
+          desc: "High-end barbershop delivering premium fades, luxury grooming, and elite service.",
+          verified: true,
+          priceTier: "high",
+          availability: [21, 13, 11, 28, 22, 10, 5, 2, 18, 7],
+
+          reviews: [
+            {
+              name: "Favour Chinedu",
+              avatar: "/STATIC/Images/icons/Frame review.png",
+              rating: 5,
+              date: "June 8, 2025",
+              text: "Top-notch! The fade was perfect and the service was premium.",
+            },
+            {
+              name: "Olawale Ade",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
+              rating: 4,
+              date: "June 4, 2025",
+              text: "Loved the experience, great ambience.",
+            },
+            {
+              name: "Kelvin U.",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
+              rating: 5,
+              date: "May 29, 2025",
+              text: "Perfect haircut every time. Highly skilled barber.",
+            },
+          ],
+
+          workingHours: [{ start: "07:00", end: "22:00" }],
+        },
+      };
+      /************************
+       * 3. RENDER BARBER
+       ************************/
+      function renderBarber() {
+        const barber = barbers[barberId];
+        const container = document.getElementById("barber-container");
+
+        if (!barber) {
+          container.innerHTML = "<p>Barber not found.</p>";
+          return;
+        }
+
+        // MAIN TEMPLATE (profile + preview reviews + modal)
+        container.innerHTML = `
+                <!-- BACK -->
+                <div class="header-row">
+                  <button class="back-btn" onclick="window.location.href='home.html';">
+                    <img src="/STATIC/Images/icons/Frame 1000009185.png" alt="Back">
+                    <span class="page-title">Back to other barbers</span>
+                  </button>
+                </div>
+
+                <div class="profile-layout">
+
+                  <div class="profile-left">
+
+                    <div class="profile-gallery">
+                      <div class="thumb-column">
+                        <img src="${barber.img}" class="thumb" />
+                        <img src="${barber.img}" class="thumb" />
+                        <img src="${barber.img}" class="thumb" />
+                        <img src="${barber.img}" class="thumb" />
+                      </div>
+
+                      <img class="main-img" src="${barber.img}" />
+                    </div>
+
+                    <button class="book-service-btn">Book Service</button>
+
+                    <div class="barber-info-card">
+                      <h2 class=barber-name><img src="/STATIC/Images/icons/barber-profile.png" alt="profile-barber">${barber.name}</h2>
+                      <p class="location">
+                        <img src="/STATIC/Images/icons/typcn_location.svg" style="width:14px;">
+                        ${barber.location}
+                      </p>
+                      <p class="desc">${barber.desc}</p>
+                    </div>
+
+                  </div> <!-- profile-left -->
+
+                  <div class="profile-right">
+                    <p id="calendar-header-text">Days Available</p>
+                    <div class="calendar-card">
+                      <h4 id="calendar-month"></h4>
+                      <div class="calendar-grid" id="calendar-grid"></div>
+                      <div class="legend">
+                        <div><span class="dot available-dot"></span> Days Available</div>
+                        <div><span class="dot unavailable-dot"></span> Days Unavailable</div>
+                      </div>
+                    </div>
+
+                    <div class="quick-actions-card">
+                      <p id="quick-action-text">Quick Actions</p>
+                   <button id="message-barber-btn" class="action-btn">
+  <span class="left-content">
+    <img src="/STATIC/Images/icons/message.svg" /> Message Barber
+  </span>
+</button>
+
+                     <button id="fav-btn" class="action-btn">
+       <img id="fav-icon" src="/STATIC/Images/icons/mynaui_heart (1).png">
+        <span id="fav-text"  class="left-content"> Add to Favourite</span>
+      </button>
+
+                    </div>
+                  </div> <!-- profile-right -->
+
+                </div> <!-- profile-layout -->
+
+                <!-- REVIEWS: full-width preview area -->
+                <section class="reviews-section reviews-full-width">
+                  <div class="reviews-header">
+                    <div>
+                      <h3>Verified Customer Reviews</h3>
+                    </div>
+                    <div>
+                      <button id="open-see-all" class="see-all-btn">See All <img src="/STATIC/Images/icons/iconamoon_arrow-right-2-duotone green.png" /></button>
+                    </div>
+                  </div>
+
+
+                  <div class="reviews-content">
+                    <aside class="reviews-summary-card">
+                      <div class="summary-rating">
+                        <h1>4.6<span>/5</span></h1>
+                        <div class="summary-stars">⭐⭐⭐⭐⭐</div>
+                        <p class="summary-count">${barber.reviews.length} Verified ratings</p>
+                      </div>
+                      <div class="rating-breakdown">
+                        <div class="bar-row"><span>5</span><div class="bar"><div style="width:80%"></div></div></div>
+                        <div class="bar-row"><span>4</span><div class="bar"><div style="width:65%"></div></div></div>
+                        <div class="bar-row"><span>3</span><div class="bar"><div style="width:25%"></div></div></div>
+                        <div class="bar-row"><span>2</span><div class="bar"><div style="width:10%"></div></div></div>
+                        <div class="bar-row"><span>1</span><div class="bar"><div style="width:5%"></div></div></div>
+                      </div>
+                    </aside>
+
+                    <div class="preview-and-more">
+                      <div id="preview-review-list" class="review-list"></div>
+                      <button id="open-see-more" class="see-more-link">See More Reviews</button>
+                    </div>
+                  </div>
+
+
+                </section>
+
+                <!-- MODAL (hidden by default) -->
+                <div id="reviewsModal" class="reviews-modal" aria-hidden="true" role="dialog" aria-label="Reviews modal">
+                  <div class="modal-overlay" id="modalOverlay"></div>
+                  <div class="modal-inner" role="document">
+                    <header class="modal-header">
+                      <div>
+                      <h2 class=barber-name><img src="/STATIC/Images/icons/barber-profile.png" alt="profile-barber">${barber.name}</h2>
+                        <p class="kicker">Ratings & Reviews</p>
+                      </div>
+                      <button id="modalClose" class="modal-close" aria-label="Close modal">&times;</button>
+                    </header>
+
+                    <div class="modal-controls">
+                      <button class="filter-btn">Start Ratings ▾</button>
+                      <button class="filter-btn">Most Relevant ▾</button>
+                    </div>
+
+                    <div id="modal-review-list" class="modal-review-list"></div>
+                  </div>
+                </div>
+              `;
+
+        // helper to render a review block
+        function reviewHTML(r) {
+          const stars =
+            "★".repeat(r.rating) + "☆".repeat(Math.max(0, 5 - r.rating));
+          return `
+                  <article class="review-item">
+                    <img src="${r.avatar}" class="review-avatar" alt="${r.name}">
+                    <div class="review-content">
+                      <div class="review-header">
+                        <h4>${r.name}</h4>
+                      </div>
+                      <div class="review-stars">${stars} <span class="date">${r.date}</span></div>
+                      <p class="review-text">${r.text}</p>
+                    </div>
+                  </article>
+                `;
+        }
+
+        // populate preview (first 3 reviews)
+        const previewEl = document.getElementById("preview-review-list");
+        previewEl.innerHTML = barber.reviews
+          .slice(0, 3)
+          .map((r) => reviewHTML(r))
+          .join("");
+
+        // populate modal with all reviews
+        const modalList = document.getElementById("modal-review-list");
+        modalList.innerHTML = barber.reviews.map((r) => reviewHTML(r)).join("");
+
+        // calendar: simple injection (keeps your existing logic)
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        document.getElementById(
+          "calendar-month"
+        ).textContent = `${monthNames[month]} ${year}`;
+        const calendarGrid = document.getElementById("calendar-grid");
+        const availableDays = barber.availability || [];
+
+        calendarGrid.innerHTML = Array.from({ length: daysInMonth }, (_, i) => {
+          const day = i + 1;
+          const isAvailable = availableDays.includes(day);
+
+          return `
+      <div class="cal-day ${isAvailable ? "available" : "unavailable"}">
+        ${day}
+      </div>
+    `;
+        }).join("");
+
+        // modal open/close
+        const modal = document.getElementById("reviewsModal");
+        const modalOverlay = document.getElementById("modalOverlay");
+        const openSeeAll = document.getElementById("open-see-all");
+        const openSeeMore = document.getElementById("open-see-more");
+        const closeBtn = document.getElementById("modalClose");
+
+        function showModal() {
+          modal.setAttribute("aria-hidden", "false");
+          modal.classList.add("open");
+          // focus trap simple: focus close button
+          closeBtn.focus();
+          document.body.style.overflow = "hidden"; // prevent background scroll
+        }
+        function hideModal() {
+          modal.setAttribute("aria-hidden", "true");
+          modal.classList.remove("open");
+          document.body.style.overflow = ""; // restore scroll
+        }
+
+        openSeeAll && openSeeAll.addEventListener("click", showModal);
+        openSeeMore && openSeeMore.addEventListener("click", showModal);
+        closeBtn.addEventListener("click", hideModal);
+        modalOverlay.addEventListener("click", hideModal);
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") hideModal();
+        });
+
+        /************************
+         * 4. FAVOURITE TOGGLE
+         ************************/
+        const favBtn = document.getElementById("fav-btn");
+        const favText = document.getElementById("fav-text");
+        const favIcon = document.getElementById("fav-icon");
+
+        function updateFavUI() {
+          const favs = getFavourites();
+          const isFav = favs.includes(barber.id);
+
+          favText.textContent = isFav
+            ? "Remove from Favourite"
+            : "Add to Favourite";
+
+          favIcon.src = isFav
+            ? "/STATIC/Images/icons/mynaui_heart (1).png"
+            : "/STATIC/Images/icons/mynaui_heart-solid.png";
+        }
+
+        updateFavUI();
+
+        favBtn.addEventListener("click", () => {
+          toggleFavourite(barber.id, barber.name);
+          updateFavUI();
+        });
+
+        const messageBtn = document.getElementById("message-barber-btn");
+
+        messageBtn.onclick = () => {
+  // Save selected barber for message page
+    localStorage.setItem("activeChatBarberId", barber.id);
+
+  // Redirect with query param
+  window.location.href = `message.html?barberId=${barber.id}`;
+};
+
+      }
+
+      renderBarber();
+
+      /* ----------------------------
+         SIDEBAR: toggle & overlay logic
+         ---------------------------- */
+      const sidebar = document.getElementById("sidebar");
+      const hamburgerBtn = document.getElementById("hamburger-btn");
+      const overlay = document.getElementById("mobile-overlay");
+      // multiple toggle icons might exist
+      function getSidebarToggleElements() {
+        const arr = Array.from(
+          document.querySelectorAll(".sidebar-toggle-icon")
+        );
+        // also include hamburger icon if it should toggle collapsed state on desktop
+        return arr;
+      }
+
+      function toggleSidebar() {
+        const isMobile = window.innerWidth <= 1024;
+        if (isMobile) {
+          sidebar.classList.toggle("mobile-open");
+          if (sidebar.classList.contains("mobile-open")) {
+            overlay.style.display = "block";
+            setTimeout(() => (overlay.style.opacity = "1"), 10);
+          } else {
+            overlay.style.opacity = "0";
+            setTimeout(() => (overlay.style.display = "none"), 300);
+          }
+        } else {
+          sidebar.classList.toggle("collapsed");
+        }
+      }
+
+      // Attach toggle listeners
+      getSidebarToggleElements().forEach((el) =>
+        el.addEventListener("click", toggleSidebar)
+      );
+      hamburgerBtn.addEventListener("click", () => {
+        hamburgerBtn.classList.toggle("active");
+        toggleSidebar();
+      });
+
+      overlay.addEventListener("click", () => {
+        sidebar.classList.remove("mobile-open");
+        overlay.style.opacity = "0";
+        setTimeout(() => (overlay.style.display = "none"), 300);
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 768) {
+          sidebar.classList.remove("mobile-open");
+          overlay.style.display = "none";
+          overlay.style.opacity = "0";
+        }
+      });
+
+      // Sync when favourites change elsewhere
+      window.addEventListener("storage", (e) => {
+        if (e.key === "favourites" || e.key === "favourites_updated") {
+          renderBarber();
+        }
+      });
+
+      if (bc) {
+        bc.addEventListener("message", (e) => {
+          if (e?.data?.type === "favourites_changed") {
+            renderBarber();
+          }
+        });
+      }
+
+   /*  function showToast(text) {
+        const toast = document.getElementById("toast");
+        if (!toast) return;
+
+        toast.textContent = text;
+        toast.classList.add("show");
+
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2000);
+      } */
+
+      function getFavourites() {
+        return JSON.parse(localStorage.getItem("favourites")) || [];
+      }
+
+      function toggleFavourite(id, name = "Barber") {
+        let favs = getFavourites();
+        id = String(id);
+
+        if (favs.includes(id)) {
+          favs = favs.filter((f) => f !== id);
+          showToast(`${name} is removed from favourite`);
+        } else {
+          favs.push(id);
+          showToast(`${name} is added to favourite`);
+        }
+
+        localStorage.setItem("favourites", JSON.stringify(favs));
+      }
+
+// Update the event listener for opening booking modal
+// Update the event listener for opening booking modal
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("book-service-btn")) {
+    const modal = document.getElementById("bookingModal");
+    modal.classList.add("open");
+
+    // Reset form when opening modal
+    resetBookingForm();
+    
+    // Set minimum date to today
+    const dateInput = document.getElementById("bookingDate");
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.value = today;
+    dateInput.min = today;
+
+    // Generate time slots for today (initial load)
+    generateTimeSlotsForDate(today);
+    
+    // Setup event listeners for clearing errors
+    setupModalEventListeners();
+  }
+});
+
+
+// Helper function to generate time slots with validation
+function generateTimeSlotsWithValidation() {
+  const dateInput = document.getElementById("bookingDate");
+  const selectedDate = dateInput.value;
+  const today = new Date().toISOString().split("T")[0];
+  
+  // Get barber working hours (default to 7:00 AM - 10:00 PM)
+  const barber = barbers[barberId];
+  const workingHours = barber?.workingHours?.[0] || { start: "07:00", end: "22:00" };
+  
+  generateTimeSlots(workingHours.start, workingHours.end, 45);
+}
+
+      // Amount Calculation Logic
+     // Update the validation logic to clear errors when valid selection is made
+document.addEventListener("change", (e) => {
+  if (e.target.id === "personsSelect") {
+    const persons = Number(e.target.value);
+    const barber = barbers[barberId];
+
+    if (!barber || !persons) return;
+
+    const total = persons * barber.amount;
+
+    document.getElementById(
+      "totalAmount"
+    ).textContent = `₦${total.toLocaleString()}`;
+    
+    // Clear error if value is selected
+    if (persons) {
+      e.target.classList.remove("invalid");
+      document.getElementById("personsError").textContent = "";
+    }
+  }
+});
+
+      // Disable past dates automatically
+      const dateInput = document.getElementById("bookingDate");
+
+      if (dateInput) {
+        const today = new Date().toISOString().split("T")[0];
+        dateInput.min = today;
+      }
+
+   document.addEventListener("click", (e) => {
+  if (e.target.id !== "proceedPayment") return;
+
+  const barber = barbers[barberId];
+
+  const persons = document.getElementById("personsSelect");
+  const date = document.getElementById("bookingDate");
+  const time = document.getElementById("bookingTime");
+
+  const personsErr = document.getElementById("personsError");
+  const dateErr = document.getElementById("dateError");
+  const timeErr = document.getElementById("timeError");
+
+  // Reset errors
+  [personsErr, dateErr, timeErr].forEach((el) => (el.textContent = ""));
+  [persons, date, time].forEach((el) => {
+    if (el) el.classList.remove("invalid");
+  });
+
+  let hasError = false;
+
+  // PERSONS
+  if (!persons || !persons.value) {
+    personsErr.textContent = "Please select number of persons.";
+    if (persons) persons.classList.add("invalid");
+    hasError = true;
+  }
+
+  // DATE
+  if (!date || !date.value) {
+    dateErr.textContent = "Please select a date.";
+    if (date) date.classList.add("invalid");
+    hasError = true;
+  } else {
+    const selected = new Date(date.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+
+    const selectedMonth = selected.getMonth();
+    const selectedYear = selected.getFullYear();
+    const selectedDay = selected.getDate();
+
+    if (selected < today) {
+      dateErr.textContent = "Past dates are not allowed.";
+      date.classList.add("invalid");
+      hasError = true;
+    } else if (
+      selectedMonth !== currentMonth ||
+      selectedYear !== currentYear
+    ) {
+      dateErr.textContent = "Please select a date in the current month.";
+      date.classList.add("invalid");
+      hasError = true;
+    } else if (!barber.availability.includes(selectedDay)) {
+      dateErr.textContent = "This barber is not available on this date.";
+      date.classList.add("invalid");
+      hasError = true;
+    }
+  }
+
+  // TIME - Add past time validation
+  if (!time || !time.value) {
+    timeErr.textContent = "Please select a time.";
+    if (time) time.classList.add("invalid");
+    hasError = true;
+  } else if (date && date.value) {
+    // Check if selected time has passed
+    if (!isTimeSlotValid(date.value, time.value)) {
+      timeErr.textContent = "This time slot has already passed. Please select a future time.";
+      time.classList.add("invalid");
+      hasError = true;
+    }
+  }
+
+  if (hasError) return;
+
+  // Prevent double booking
+  if (isSlotBooked(barberId, date.value, time.value)) {
+    dateErr.textContent = "This time slot has already been booked.";
+    date.classList.add("invalid");
+    time.classList.add("invalid");
+    return;
+  }
+
+  // Save booking temporarily (lock the slot)
+  const amount = Number(
+    document
+      .getElementById("totalAmount")
+      .textContent.replace(/[₦,]/g, "")
+  );
+
+  saveBooking({
+    barberId,
+    date: date.value,
+    time: time.value,
+    persons: persons.value,
+    amount,
+    status: "pending",
+    createdAt: Date.now(),
+  });
+
+  localStorage.setItem("pendingPaymentAmount", amount);
+
+  closeBookingModal();
+  openPaymentModal();
+});
+
+
+// Function to reset booking form
+function resetBookingForm() {
+  const persons = document.getElementById("personsSelect");
+  const date = document.getElementById("bookingDate");
+  const time = document.getElementById("bookingTime");
+  
+  if (persons) persons.value = "";
+  if (date) {
+    const today = new Date().toISOString().split("T")[0];
+    date.value = today;
+  }
+  if (time) time.innerHTML = '<option value="">Choose a time slot</option>';
+  
+  // Reset errors
+  document.querySelectorAll('.error-text').forEach(el => el.textContent = '');
+  document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  
+  // Reset amount
+  document.getElementById("totalAmount").textContent = "₦0";
+}
+
+
+
+
+
+function generateTimeSlotsForDate(selectedDate) {
+  const select = document.getElementById("bookingTime");
+  if (!select) return;
+
+  select.innerHTML = `<option value="">Choose a time slot</option>`;
+  
+  // Get barber working hours
+  const barber = barbers[barberId];
+  const workingHours = barber?.workingHours?.[0] || { start: "07:00", end: "22:00" };
+  const [startH, startM] = workingHours.start.split(":").map(Number);
+  const [endH, endM] = workingHours.end.split(":").map(Number);
+  
+  const today = new Date().toISOString().split("T")[0];
+  const isToday = selectedDate === today;
+  
+  let currentHour = 0;
+  let currentMinute = 0;
+  
+  if (isToday) {
+    const now = new Date();
+    currentHour = now.getHours();
+    currentMinute = now.getMinutes();
+  }
+
+  let h = startH;
+  let m = startM;
+  const interval = 45; // 45 minutes per appointment
+
+  while (h < endH || (h === endH && m + interval <= endM)) {
+    const startTime = formatTime24to12(h, m);
+    
+    // Check if this time slot has passed (only for today)
+    let isPastTime = false;
+    if (isToday) {
+      // Compare with current time
+      if (h < currentHour || (h === currentHour && m < currentMinute)) {
+        isPastTime = true;
+      }
+    }
+
+    let endMinutes = h * 60 + m + interval;
+    let endHour = Math.floor(endMinutes / 60);
+    let endMin = endMinutes % 60;
+
+    const endTime = formatTime24to12(endHour, endMin);
+
+    const label = `${startTime} – ${endTime}`;
+
+    const option = document.createElement("option");
+    option.value = label;
+    
+    if (isPastTime) {
+      option.disabled = true;
+      option.textContent = `${label} (Passed)`;
+      option.style.color = "#ccc";
+    } else {
+      option.textContent = label;
+    }
+    
+    select.appendChild(option);
+
+    m += interval;
+    if (m >= 60) {
+      h += Math.floor(m / 60);
+      m = m % 60;
+    }
+  }
+  
+  // If all slots are disabled for today, show a message
+  if (isToday) {
+    const enabledOptions = Array.from(select.options).filter(opt => !opt.disabled && opt.value);
+    if (enabledOptions.length === 0) {
+      select.innerHTML = `<option value="">No available slots for today</option>`;
+      select.disabled = true;
+    } else {
+      select.disabled = false;
+    }
+  } else {
+    // For future dates, all slots should be available
+    select.disabled = false;
+  }
+}
+
+// Helper function to format time in 12-hour format
+function formatTime24to12(hour, minute) {
+  const h = hour % 12 === 0 ? 12 : hour % 12;
+  const m = minute.toString().padStart(2, "0");
+  const ampm = hour >= 12 ? "PM" : "AM";
+  return `${h}:${m} ${ampm}`;
+}
+
+
+function isTimeSlotValid(selectedDate, selectedTime) {
+  const today = new Date().toISOString().split("T")[0];
+  
+  // If not today, any future time is valid
+  if (selectedDate !== today) {
+    return true;
+  }
+  
+  // If today, check if time has passed
+  const now = new Date();
+  
+  // Parse the time range (e.g., "2:30 PM – 3:15 PM")
+  const [timeRange] = selectedTime.split(" – ");
+  const timeMatch = timeRange.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  
+  if (!timeMatch) return true; // If we can't parse, assume valid
+  
+  let [_, hour, minute, ampm] = timeMatch;
+  hour = parseInt(hour);
+  minute = parseInt(minute);
+  
+  // Convert to 24-hour format
+  if (ampm.toUpperCase() === "PM" && hour !== 12) {
+    hour += 12;
+  } else if (ampm.toUpperCase() === "AM" && hour === 12) {
+    hour = 0;
+  }
+  
+  // Check if selected time has passed
+  if (hour < now.getHours()) {
+    return false;
+  } else if (hour === now.getHours() && minute <= now.getMinutes()) {
+    return false;
+  }
+  
+  return true;
+}
+
+function formatTime24to12(hour, minute) {
+  const h = hour % 12 === 0 ? 12 : hour % 12;
+  const m = minute.toString().padStart(2, "0");
+  const ampm = hour >= 12 ? "PM" : "AM";
+  return `${h}:${m} ${ampm}`;
+}
+
+  // Call when booking modal opens
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("book-service-btn")) {
+      generateTimeSlots("07:00", "22:00", 45);
+    }
+  });
+
+
+
+      // Booking storage helpers
+      function getBookings() {
+        return JSON.parse(localStorage.getItem("bookings")) || [];
+      }
+
+      function saveBooking(booking) {
+        const bookings = getBookings();
+        bookings.push(booking);
+        localStorage.setItem("bookings", JSON.stringify(bookings));
+      }
+
+      function isSlotBooked(barberId, date, time) {
+        const bookings = getBookings();
+        return bookings.some(
+          (b) =>
+            b.barberId === barberId &&
+            b.date === date &&
+            b.time === time &&
+            b.status !== "cancelled"
+        );
+      }
+
+
+      function clearErrorsOnInput() {
+  const persons = document.getElementById("personsSelect");
+  const date = document.getElementById("bookingDate");
+  const time = document.getElementById("bookingTime");
+  
+  if (persons) {
+    persons.addEventListener("change", function() {
+      if (this.value) {
+        this.classList.remove("invalid");
+        document.getElementById("personsError").textContent = "";
+      }
+    });
+  }
+  
+  if (date) {
+    date.addEventListener("change", function() {
+      if (this.value) {
+        this.classList.remove("invalid");
+        document.getElementById("dateError").textContent = "";
+      }
+    });
+  }
+  
+  if (time) {
+    time.addEventListener("change", function() {
+      if (this.value) {
+        this.classList.remove("invalid");
+        document.getElementById("timeError").textContent = "";
+      }
+    });
+  }
+}
+
+      // Payment modal open and close function
+      function openPaymentModal() {
+        const paymentModal = document.getElementById("paymentModal");
+        const paymentBtn = document.getElementById("paymentBtn");
+
+        if (!paymentModal) return;
+
+        const amount =
+          Number(localStorage.getItem("pendingPaymentAmount")) || 0;
+
+        paymentBtn.textContent = `Payment ₦${amount.toLocaleString()}`;
+
+        paymentModal.classList.add("open");
+        paymentModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closePaymentModal() {
+        const paymentModal = document.getElementById("paymentModal");
+        if (!paymentModal) return;
+
+        paymentModal.classList.remove("open");
+        paymentModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      document
+        .getElementById("paymentModal")
+        ?.addEventListener("click", (e) => {
+          if (e.target.id === "paymentModal") {
+            closePaymentModal();
+          }
+        });
+
+      document.addEventListener("click", (e) => {
+        const paymentModal = document.getElementById("paymentModal");
+        const paymentBox = paymentModal?.querySelector(".booking-box");
+
+        if (!paymentModal?.classList.contains("open")) return;
+
+        // If click is on overlay (outside modal box)
+        if (
+          e.target.classList.contains("booking-overlay") &&
+          paymentModal.contains(e.target)
+        ) {
+          closePaymentModal();
+        }
+      });
+
+      // logic for either card or transfer
+      document.addEventListener("change", (e) => {
+        if (e.target.name !== "paymentMethod") return;
+
+        const card = document.getElementById("cardPayment");
+        const transfer = document.getElementById("bankTransferPayment");
+
+        if (e.target.value === "card") {
+          card.style.display = "block";
+          transfer.style.display = "none";
+        } else {
+          card.style.display = "none";
+          transfer.style.display = "block";
+        }
+      });
+
+      document.getElementById("paymentBtn").addEventListener("click", () => {
+  const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+  // Find last pending booking
+  const pendingBooking = bookings
+    .slice()
+    .reverse()
+    .find((b) => b.status === "pending");
+
+  if (!pendingBooking) {
+    alert("No pending booking found");
+    return;
+  }
+
+  // Simulate payment success
+  pendingBooking.status = "completed";
+  pendingBooking.paidAt = new Date().toISOString();
+
+  localStorage.setItem("bookings", JSON.stringify(bookings));
+
+  notifyBookingConfirmed(barbers[barberId].name, pendingBooking.barberId);
+
+  scheduleBookingReminders({
+  id: pendingBooking.barberId,
+  datetime: `${pendingBooking.date}T${pendingBooking.time.split(" – ")[0]}`
+});
+
+ notifyPaymentSuccess(pendingBooking.amount, "TRIM-" + Date.now());
+
+
+  // Close modal & redirect
+  closePaymentModal();
+  window.location.href = "booking.html";
+});
+
+function updateAllAvatars() {
+  const avatar = localStorage.getItem("trimly_avatar");
+  if (!avatar) return;
+
+  document.querySelectorAll(".avatar").forEach((el) => {
+    el.style.backgroundImage = `url(${avatar})`;
+    el.style.backgroundSize = "cover";
+    el.style.backgroundPosition = "center";
+    el.textContent = ""; // remove initials
+  });
+}
+
+
+// Function to setup modal event listeners
+function setupModalEventListeners() {
+  // Close modal when clicking X button
+  const closeBtn = document.getElementById("closeBooking");
+  if (closeBtn) {
+    closeBtn.onclick = function() {
+      closeBookingModal();
+    };
+  }
+  
+  // Close modal when clicking Cancel button
+  const cancelBtn = document.querySelector(".cancelBooking");
+  if (cancelBtn) {
+    cancelBtn.onclick = function() {
+      closeBookingModal();
+    };
+  }
+  
+  // Close modal when clicking outside (on overlay)
+  const overlay = document.querySelector("#bookingModal .booking-overlay");
+  if (overlay) {
+    overlay.onclick = function(e) {
+      if (e.target === overlay) {
+        closeBookingModal();
+      }
+    };
+  }
+  
+  // Close modal with Escape key
+  document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById("bookingModal");
+    if (e.key === 'Escape' && modal && modal.classList.contains('open')) {
+      closeBookingModal();
+    }
+  });
+  
+  // Clear errors when user interacts with inputs
+  clearErrorsOnInput();
+  
+  // Date change listener
+  const dateInput = document.getElementById("bookingDate");
+  if (dateInput) {
+    dateInput.onchange = function() {
+      const selectedDate = this.value;
+      generateTimeSlotsForDate(selectedDate);
+      
+      // Clear errors
+      this.classList.remove("invalid");
+      document.getElementById("dateError").textContent = "";
+      
+      // Clear time error too
+      const timeInput = document.getElementById("bookingTime");
+      if (timeInput) {
+        timeInput.classList.remove("invalid");
+        document.getElementById("timeError").textContent = "";
+      }
+    };
+  }
+}
+
+
+// Function to close booking modal
+function closeBookingModal() {
+  const modal = document.getElementById("bookingModal");
+  if (modal) {
+    modal.classList.remove("open");
+    resetBookingForm();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateAllAvatars();
+});
+
+    </script>
+    <script src="./TrimlyNotifications.js"></script>
+
+
+    <div id="toast"></div>
+
+    <!-- BOOK SERVICE MODAL -->
+    <div id="bookingModal" class="booking-modal">
+      <div class="booking-overlay"></div>
+
+      <div class="booking-box">
+        <header class="booking-header">
+          <h3>Book for a cut</h3>
+          <button id="closeBooking">&times;</button>
+        </header>
+        <p style="color: #737373; font-size: 14px; margin-top: 5px">
+          Fill in your information below to book for your haircut
+        </p>
+
+        <form class="booking-form">
+          <label>
+            Number of Persons
+            <select id="personsSelect" required>
+              <option value="">Choose number of persons</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option>
+              <option>13</option>
+              <option>14</option>
+              <option>15</option>
+              <option>16</option>
+              <option>17</option>
+              <option>18</option>
+              <option>19</option>
+              <option>20</option>
+            </select>
+            <p class="error-text" id="personsError"></p>
+          </label>
+
+          <label>
+            Choose Date
+            <input type="date" id="bookingDate" required />
+            <p id="dateError" class="error-text"></p>
+          </label>
+
+          <label>
+            Choose Time
+          <select id="bookingTime" required>
+  <option value="">Choose a time slot</option>
+</select>
+<p class="error-text" id="timeError"></p>
+
+            <p class="error-text" id="timeError"></p>
+          </label>
+
+          <label>
+            Additional Notes (optional)
+            <textarea
+              placeholder="Please include all information relevant to your issue"
+            ></textarea>
+          </label>
+
+          <p class="amount">Amount: <strong id="totalAmount">₦0</strong></p>
+
+          <div class="booking-actions">
+            <button type="button" class="cancelBooking">Cancel</button>
+            <button type="button" class="pay-btn" id="proceedPayment">
+              Proceed to payment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAYMENT MODAL -->
+    <div id="paymentModal" class="booking-modal payment-modal">
+      <div class="booking-overlay"></div>
+
+      <div class="booking-box payment-box">
+        <header class="booking-header">
+          <h3>Book for a cut</h3>
+          <button onclick="closePaymentModal()">&times;</button>
+        </header>
+
+        <p class="payment-subtitle">
+          Fill in your information below to book for your haircut
+        </p>
+
+        <!-- Payment Method -->
+        <div class="payment-section">
+          <p class="section-title">Payment Method</p>
+          <p class="section-desc">
+            Select the Payment Method that best fits your needs.
+          </p>
+
+          <div class="payment-methods">
+            <label class="method-card">
+              <input type="radio" name="paymentMethod" value="card" checked />
+              <div>
+                <span class="icon">💳</span>
+                <span>Bank Card</span>
+              </div>
+            </label>
+
+            <label class="method-card">
+              <input type="radio" name="paymentMethod" value="transfer" />
+              <div>
+                <span class="icon">🏦</span>
+                <span>Bank Transfer</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form class="payment-form">
+          <!-- DYNAMIC PAYMENT CONTENT -->
+          <div id="paymentContent">
+            <!-- CARD PAYMENT -->
+            <div id="cardPayment">
+              <label>
+                Card Name
+                <input type="text" placeholder="John Doe" />
+              </label>
+
+              <label class="card-number">
+                Card Number
+                <input type="text" placeholder="1234 5678 9054 3738" />
+                
+                <img src="/STATIC/Images/icons/visaMasterAmex.png" />
+                
+                </label>
+              </label>
+
+              <div class="form-row">
+                <label>
+                  Expiry Date
+                  <input type="text" placeholder="MM/YY" />
+                </label>
+
+                <label>
+                  CVC
+                  <input type="text" placeholder="000" />
+                </label>
+              </div>
+
+              <label>
+                Country
+                <select>
+                  <option>Nigeria</option>
+                  <option>Ghana</option>
+                </select>
+              </label>
+            </div>
+
+            <!-- BANK TRANSFER -->
+            <div id="bankTransferPayment" style="display: none">
+              <div class="transfer-box">
+                <p class="transfer-title">Transfer to the account below</p>
+
+                <div class="transfer-detail">
+                  <span>Bank Name</span>
+                  <strong>Polaris Bank</strong>
+                </div>
+
+                <div class="transfer-detail">
+                  <span>Account Number</span>
+                  <strong>4092130569</strong>
+                </div>
+
+                <div class="transfer-detail">
+                  <span>Account Name</span>
+                  <strong>Trimly Digital Grooming Limited</strong>
+                </div>
+
+                <p class="transfer-note">
+                  Make the transfer and click <strong>Payment</strong> after
+                  completion.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="booking-actions">
+            <button
+              type="button"
+              class="cancelBooking"
+              onclick="closePaymentModal()"
+            >
+              Cancel
+            </button>
+            <button type="button" onclick="confirmPayment(BOOKING_ID)" class="pay-btn" id="paymentBtn">
+              Payment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

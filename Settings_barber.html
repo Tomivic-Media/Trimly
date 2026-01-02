@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trimly | Settings</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href="/STATIC/Images/icons/trimly logo.svg"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+        --color-bg-sidebar: #f9fafb;
+        --color-bg-main: #ffffff;
+        --color-text-primary: #000000;
+        --color-text-secondary: #6b7280;
+        --color-accent: rgba(218, 228, 243, 1);
+        --color-border: #e5e7eb;
+        --color-hover: rgba(240, 240, 240, 1);
+        --sidebar-width-expanded: 250px;
+        --sidebar-width-collapsed: 80px;
+        --header-height: 80px;
+        --transition-speed: 0.3s;
+
+        /* Settings Colors */
+        --primary: #111827;
+        --secondary: #3b82f6;
+        --secondary-light: #60a5fa;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --info: #3b82f6;
+        --white: #ffffff;
+        --off-white: #f9fafb;
+        --light-gray: #f3f4f6;
+        --gray: #9ca3af;
+        --dark-gray: #6b7280;
+        --black: #111827;
+        --radius: 10px;
+        --radius-lg: 14px;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, sans-serif;
+        background: var(--off-white);
+        color: var(--black);
+        min-height: 100vh;
+        line-height: 1.5;
+        overflow-x: hidden;
+      }
+
+      /* App Container */
+      .app-container {
+        display: flex;
+        height: 100vh;
+        width: 100%;
+      }
+
+      /* Sidebar (same as other pages) */
+      .sidebar {
+        width: var(--sidebar-width-expanded);
+        background-color: var(--color-bg-sidebar);
+        border-right: 1px solid var(--color-border);
+        display: flex;
+        flex-direction: column;
+        transition: all var(--transition-speed);
+        flex-shrink: 0;
+        overflow-x: hidden;
+        height: 100vh;
+        position: relative;
+        z-index: 1000;
+      }
+
+      .sidebar.collapsed {
+        width: var(--sidebar-width-collapsed);
+      }
+
+      .sidebar.collapsed .logo-text,
+      .sidebar.collapsed .nav-label,
+      .sidebar.collapsed .social-icons {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .sidebar.collapsed .logo-area {
+        justify-content: center;
+        padding: 20px 0;
+      }
+
+      .sidebar.collapsed .logo-text {
+        display: none;
+      }
+
+      .sidebar.collapsed .sidebar-toggle-icon {
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+      }
+
+      .sidebar.collapsed .sidebar-toggle-icon img {
+        width: 36px !important;
+        height: 36px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+
+      .sidebar-header {
+        height: var(--header-height);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+      }
+
+      .logo-area {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-text {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .nav-list {
+        flex: 1;
+        padding: 16px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border-radius: 8px;
+        color: var(--color-text-secondary);
+        transition: all 0.2s;
+        gap: 12px;
+        text-decoration: none;
+      }
+
+      .nav-item:hover {
+        background-color: var(--color-hover);
+        color: var(--color-text-primary);
+      }
+
+      .nav-item.active {
+        background-color: var(--color-accent);
+        color: var(--color-text-primary);
+        font-weight: 500;
+      }
+
+      .nav-icon img {
+        width: 18px;
+        height: 18px;
+      }
+
+      .social-icons {
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      /* Mobile Overlay */
+      #mobile-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 40;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      /* Hamburger Button */
+      .hamburger-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1002;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        background: var(--white);
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+      }
+
+      .hamburger-btn img {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background-color: var(--white);
+        width: calc(100% - var(--sidebar-width-expanded));
+        height: 100vh;
+        transition: margin-left var(--transition-speed);
+      }
+
+      .sidebar.collapsed ~ .main-content {
+        margin-left: var(--sidebar-width-collapsed);
+        width: calc(100% - var(--sidebar-width-collapsed));
+      }
+
+      /* Header */
+      .header {
+        height: 70px;
+        background: var(--white);
+        border-bottom: 1px solid var(--light-gray);
+        padding: 0 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 900;
+      }
+
+      .header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .page-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--black);
+      }
+
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: var(--gray);
+      }
+
+      .breadcrumb .active {
+        color: var(--black);
+        font-weight: 500;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      .header-action-btn {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 1px solid var(--light-gray);
+        background: var(--white);
+        color: var(--dark-gray);
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: var(--error);
+        color: var(--white);
+        font-size: 0.7rem;
+        font-weight: 600;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Settings Container */
+      .settings-container {
+        padding: 32px;
+        overflow-y: auto;
+        height: calc(100vh - 70px);
+      }
+
+      /* Settings Grid */
+      .settings-grid {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 32px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* Settings Sidebar */
+      .settings-sidebar {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        padding: 24px;
+        height: fit-content;
+        position: sticky;
+        top: 32px;
+      }
+
+      .settings-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .settings-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: var(--radius);
+        color: var(--dark-gray);
+        text-decoration: none;
+        transition: all 0.2s;
+        font-weight: 500;
+      }
+
+      .settings-nav-item:hover {
+        background: var(--light-gray);
+        color: var(--black);
+      }
+
+      .settings-nav-item.active {
+        background: var(--color-accent);
+        color: var(--black);
+        font-weight: 600;
+      }
+
+      .settings-nav-icon {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Settings Content */
+      .settings-content {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        padding: 32px;
+      }
+
+      .settings-section {
+        margin-bottom: 40px;
+      }
+
+      .settings-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .settings-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 24px;
+        color: var(--black);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Profile Section */
+      .profile-section {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 32px;
+        padding-bottom: 32px;
+        border-bottom: 1px solid var(--light-gray);
+      }
+
+      .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 600;
+        position: relative;
+      }
+
+      .profile-avatar-edit {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: var(--white);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
+        cursor: pointer;
+      }
+
+      .profile-info h3 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+      }
+
+      .profile-info p {
+        color: var(--gray);
+        margin-bottom: 12px;
+      }
+
+      .profile-stats {
+        display: flex;
+        gap: 24px;
+      }
+
+      .profile-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .profile-stat-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--black);
+      }
+
+      .profile-stat-label {
+        font-size: 0.85rem;
+        color: var(--gray);
+      }
+
+      /* Form Styles */
+      .form-group {
+        margin-bottom: 24px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--dark-gray);
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid var(--light-gray);
+        border-radius: var(--radius);
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.2s;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .form-control::placeholder {
+        color: var(--gray);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .form-help {
+        font-size: 0.85rem;
+        color: var(--gray);
+        margin-top: 6px;
+      }
+
+      /* Switch Toggle */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--gray);
+        transition: 0.4s;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+      }
+
+      input:checked + .slider {
+        background-color: var(--success);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(30px);
+      }
+
+      .slider.round {
+        border-radius: 34px;
+      }
+
+      .slider.round:before {
+        border-radius: 50%;
+      }
+
+      .switch-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Notification Settings */
+      .notification-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border: 1px solid var(--light-gray);
+        border-radius: var(--radius);
+        margin-bottom: 12px;
+      }
+
+      .notification-info h4 {
+        font-size: 1rem;
+        margin-bottom: 4px;
+      }
+
+      .notification-info p {
+        font-size: 0.9rem;
+        color: var(--gray);
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 12px 24px;
+        border-radius: var(--radius);
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.95rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--secondary) 0%,
+          var(--secondary-light) 100%
+        );
+        color: var(--white);
+        border: none;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+
+      .btn-secondary {
+        background: var(--white);
+        color: var(--dark-gray);
+        border: 1px solid var(--light-gray);
+      }
+
+      .btn-secondary:hover {
+        background: var(--light-gray);
+      }
+
+      .btn-danger {
+        background: var(--error);
+        color: var(--white);
+        border: none;
+      }
+
+      .btn-danger:hover {
+        background: #dc2626;
+      }
+
+      .btn-sm {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+
+      .btn-block {
+        width: 100%;
+      }
+
+      /* Service Item */
+      .service-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border: 1px solid var(--light-gray);
+        border-radius: var(--radius);
+        margin-bottom: 12px;
+      }
+
+      .service-info h4 {
+        font-size: 1rem;
+        margin-bottom: 4px;
+      }
+
+      .service-info p {
+        font-size: 0.9rem;
+        color: var(--gray);
+      }
+
+      .service-price {
+        font-weight: 700;
+        color: var(--secondary);
+      }
+
+      /* Payment Methods */
+      .payment-method {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        border: 1px solid var(--light-gray);
+        border-radius: var(--radius);
+        margin-bottom: 12px;
+      }
+
+      .payment-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius);
+        background: var(--light-gray);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+      }
+
+      /* Modal Styles */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1100;
+        padding: 20px;
+      }
+
+      .modal-content {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        width: 100%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--light-gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-body {
+        padding: 24px;
+      }
+
+      .modal-footer {
+        padding: 20px 24px;
+        border-top: 1px solid var(--light-gray);
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+      }
+
+      /* Toast Notification */
+      .toast {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        padding: 16px 24px;
+        border-radius: var(--radius);
+        color: var(--white);
+        font-weight: 500;
+        box-shadow: var(--shadow-lg);
+        z-index: 1200;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        max-width: 350px;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .toast.success {
+        background: var(--success);
+      }
+
+      .toast.error {
+        background: var(--error);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1024px) {
+        .sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          transform: translateX(-100%);
+          z-index: 1000;
+        }
+
+        .sidebar.mobile-open {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0 !important;
+          width: 100% !important;
+        }
+
+        .hamburger-btn {
+          display: flex;
+        }
+
+        .settings-grid {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+
+        .settings-sidebar {
+          position: static;
+          top: 0;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .settings-container {
+          padding: 16px;
+        }
+
+        .header {
+          padding: 0 16px;
+          flex-direction: column;
+          gap: 16px;
+          height: auto;
+          padding: 16px;
+        }
+
+        .header-right {
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 12px;
+        }
+
+        .profile-section {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .profile-stats {
+          justify-content: center;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+
+        .modal-content {
+          width: 95%;
+          margin: 10px;
+        }
+
+        .modal-footer {
+          flex-direction: column;
+        }
+
+        .modal-footer .btn {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .settings-content {
+          padding: 20px;
+        }
+
+        .settings-section h2 {
+          font-size: 1.3rem;
+        }
+
+        .notification-item,
+        .service-item,
+        .payment-method {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+        }
+      }
+
+      /* Quick fix to make hamburger match logo size */
+      .hamburger-btn img {
+        width: 18px !important;
+        height: 18px !important;
+      }
+
+      /* Ensure sidebar logo is same size */
+      .logo-area img,
+      .sidebar-toggle-icon img {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Override any other conflicting styles */
+      .sidebar.collapsed .sidebar-toggle-icon img {
+        width: 18px !important;
+        height: 18px !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-area">
+            <span class="logo-text">Trimly</span>
+            <i class="nav-icon sidebar-toggle-icon">
+              <img src="/STATIC/Images/icons/trimly logo.svg" alt="" />
+            </i>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <a href="dashboard_barber.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/Vector.svg" alt=""
+            /></i>
+            <span class="nav-label">Dashboard</span>
+          </a>
+          <a href="messages_barber.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/message.svg" alt=""
+            /></i>
+            <span class="nav-label">Messages</span>
+          </a>
+          <a href="booking_barber.html" class="nav-item">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/bookings.svg" alt=""
+            /></i>
+            <span class="nav-label">Bookings</span>
+          </a>
+          <a href="Settings_barber.html" class="nav-item active">
+            <i class="nav-icon"
+              ><img src="/STATIC/Images/icons/settings.svg" alt=""
+            /></i>
+            <span class="nav-label">Settings</span>
+          </a>
+        </nav>
+
+        <div class="social-icons">
+          <a href="#"
+            ><i><img src="/STATIC/Images/fb.svg" alt="" /></i
+          ></a>
+          <a href="#"
+            ><i><img src="/STATIC/Images/icons/ig.svg" alt="" /></i
+          ></a>
+          <a href="#"
+            ><i><img src="/STATIC/Images/icons/x.svg" alt="" /></i
+          ></a>
+          <a href="#"
+            ><i><img src="/STATIC/Images/icons/messenger.svg" alt="" /></i
+          ></a>
+        </div>
+      </aside>
+
+      <!-- Hamburger Button -->
+      <button
+        id="hamburger-btn"
+        class="hamburger-btn"
+        aria-label="Toggle sidebar"
+      >
+        <img src="/STATIC/Images/icons/trimly logo.svg" alt="menu" />
+      </button>
+
+      <!-- Mobile Overlay -->
+      <div id="mobile-overlay"></div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+          <div class="header-left">
+            <h1 class="page-title">Settings</h1>
+            <div class="breadcrumb">
+              <span>Home</span>
+              <i class="fas fa-chevron-right"></i>
+              <span class="active">Settings</span>
+            </div>
+          </div>
+
+          <div class="header-right">
+            <div class="header-actions">
+              <button class="header-action-btn" id="notificationsBtn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationCount">3</span>
+              </button>
+            </div>
+
+            <div class="date-display">
+              <i class="fas fa-calendar-day"></i>
+              <span id="todayDate"></span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Settings Content -->
+        <div class="settings-container">
+          <div class="settings-grid">
+            <!-- Settings Sidebar -->
+            <div class="settings-sidebar">
+              <nav class="settings-nav" id="settingsNav">
+                <a
+                  href="#profile"
+                  class="settings-nav-item active"
+                  data-section="profile"
+                >
+                  <div class="settings-nav-icon">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  Profile Settings
+                </a>
+                <a
+                  href="#business"
+                  class="settings-nav-item"
+                  data-section="business"
+                >
+                  <div class="settings-nav-icon">
+                    <i class="fas fa-store"></i>
+                  </div>
+                  Business Info
+                </a>
+                <a
+                  href="#services"
+                  class="settings-nav-item"
+                  data-section="services"
+                >
+                  <div class="settings-nav-icon">
+                    <i class="fas fa-cut"></i>
+                  </div>
+                  Services & Pricing
+                </a>
+                <a
+                  href="#notifications"
+                  class="settings-nav-item"
+                  data-section="notifications"
+                >
+                  <div class="settings-nav-icon">
+                    <i class="fas fa-bell"></i>
+                  </div>
+                  Notifications
+                </a>
+                <a
+                  href="#availability"
+                  class="settings-nav-item"
+                  data-section="availability"
+                >
+                  <div class="settings-nav-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                  </div>
+                  Availability
+                </a>
+                <a
+                  href="#payments"
+                  class="settings-nav-item"
+                  data-section="payments"
+                >
+                  <div class="settings-nav-icon">
+                    <i class="fas fa-credit-card"></i>
+                  </div>
+                  Payment Methods
+                </a>
+                <a
+                  href="#security"
+                  class="settings-nav-item"
+                  data-section="security"
+                >
+                  <div class="settings-nav-icon">
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                  Security
+                </a>
+                <a
+                  href="#account"
+                  class="settings-nav-item"
+                  data-section="account"
+                >
+                  <div class="settings-nav-icon">
+                    <i class="fas fa-cog"></i>
+                  </div>
+                  Account Settings
+                </a>
+              </nav>
+            </div>
+
+            <!-- Settings Content Area -->
+            <div class="settings-content">
+              <!-- Profile Settings (Active by default) -->
+              <div class="settings-section" id="profileSection">
+                <div class="profile-section">
+                  <div class="profile-avatar">
+                    <span id="profileInitials">B</span>
+                    <div
+                      class="profile-avatar-edit"
+                      onclick="editProfilePicture()"
+                    >
+                      <i class="fas fa-camera"></i>
+                    </div>
+                  </div>
+                  <div class="profile-info">
+                    <h3 id="profileName">Barber Name</h3>
+                    <p id="profileEmail">barber@example.com</p>
+                    <div class="profile-stats">
+                      <div class="profile-stat">
+                        <span class="profile-stat-value" id="totalBookings"
+                          >0</span
+                        >
+                        <span class="profile-stat-label">Total Bookings</span>
+                      </div>
+                      <div class="profile-stat">
+                        <span class="profile-stat-value" id="averageRating"
+                          >4.8</span
+                        >
+                        <span class="profile-stat-label">Avg Rating</span>
+                      </div>
+                      <div class="profile-stat">
+                        <span class="profile-stat-value" id="memberSince"
+                          >2024</span
+                        >
+                        <span class="profile-stat-label">Member Since</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h2><i class="fas fa-user-edit"></i> Personal Information</h2>
+                <form id="profileForm">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="firstName">First Name</label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        class="form-control"
+                        placeholder="Enter first name"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="lastName">Last Name</label>
+                      <input
+                        type="text"
+                        id="lastName"
+                        class="form-control"
+                        placeholder="Enter last name"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input
+                      type="email"
+                      id="email"
+                      class="form-control"
+                      placeholder="Enter email address"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      class="form-control"
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea
+                      id="bio"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Tell clients about yourself..."
+                    ></textarea>
+                    <div class="form-help">
+                      This will appear on your public profile
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="saveProfile()"
+                  >
+                    <i class="fas fa-save"></i> Save Changes
+                  </button>
+                </form>
+              </div>
+
+              <!-- Business Info (Hidden by default) -->
+              <div
+                class="settings-section"
+                id="businessSection"
+                style="display: none"
+              >
+                <h2><i class="fas fa-store"></i> Business Information</h2>
+                <form id="businessForm">
+                  <div class="form-group">
+                    <label for="businessName">Business Name</label>
+                    <input
+                      type="text"
+                      id="businessName"
+                      class="form-control"
+                      placeholder="Enter business name"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="businessType">Business Type</label>
+                    <select id="businessType" class="form-control">
+                      <option value="barbershop">Barbershop</option>
+                      <option value="salon">Salon</option>
+                      <option value="mobile">Mobile Barber</option>
+                      <option value="home">Home-based</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="address">Business Address</label>
+                    <textarea
+                      id="address"
+                      class="form-control"
+                      rows="3"
+                      placeholder="Enter business address"
+                    ></textarea>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="city">City</label>
+                      <input
+                        type="text"
+                        id="city"
+                        class="form-control"
+                        placeholder="Enter city"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="zipCode">ZIP Code</label>
+                      <input
+                        type="text"
+                        id="zipCode"
+                        class="form-control"
+                        placeholder="Enter ZIP code"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="website">Website (Optional)</label>
+                    <input
+                      type="url"
+                      id="website"
+                      class="form-control"
+                      placeholder="https://example.com"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="yearsExperience">Years of Experience</label>
+                    <select id="yearsExperience" class="form-control">
+                      <option value="0-1">Less than 1 year</option>
+                      <option value="1-3">1-3 years</option>
+                      <option value="3-5">3-5 years</option>
+                      <option value="5-10">5-10 years</option>
+                      <option value="10+">10+ years</option>
+                    </select>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="saveBusinessInfo()"
+                  >
+                    <i class="fas fa-save"></i> Save Business Info
+                  </button>
+                </form>
+              </div>
+
+              <!-- Services & Pricing (Hidden by default) -->
+              <div
+                class="settings-section"
+                id="servicesSection"
+                style="display: none"
+              >
+                <h2><i class="fas fa-cut"></i> Services & Pricing</h2>
+                <div class="services-list" id="servicesList">
+                  <!-- Services will be loaded here -->
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-block"
+                  onclick="addService()"
+                  style="margin-top: 20px"
+                >
+                  <i class="fas fa-plus"></i> Add New Service
+                </button>
+              </div>
+
+              <!-- Notifications (Hidden by default) -->
+              <div
+                class="settings-section"
+                id="notificationsSection"
+                style="display: none"
+              >
+                <h2><i class="fas fa-bell"></i> Notification Settings</h2>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <h4>Email Notifications</h4>
+                    <p>Receive email updates about bookings and messages</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="emailNotifications" checked />
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <h4>SMS Notifications</h4>
+                    <p>Receive text message alerts for bookings</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="smsNotifications" />
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <h4>New Booking Alerts</h4>
+                    <p>Get notified immediately when a new booking is made</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="bookingAlerts" checked />
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <h4>Reminder Notifications</h4>
+                    <p>
+                      Send automatic reminders to clients before appointments
+                    </p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="reminderAlerts" checked />
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="saveNotificationSettings()"
+                >
+                  <i class="fas fa-save"></i> Save Notification Settings
+                </button>
+              </div>
+
+              <!-- Availability (Hidden by default) -->
+              <div
+                class="settings-section"
+                id="availabilitySection"
+                style="display: none"
+              >
+                <h2>
+                  <i class="fas fa-calendar-alt"></i> Availability Settings
+                </h2>
+                <div class="form-group">
+                  <label>Working Days</label>
+                  <div class="availability-days" id="availabilityDays">
+                    <!-- Days will be loaded here -->
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="startTime">Start Time</label>
+                    <input
+                      type="time"
+                      id="startTime"
+                      class="form-control"
+                      value="09:00"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="endTime">End Time</label>
+                    <input
+                      type="time"
+                      id="endTime"
+                      class="form-control"
+                      value="18:00"
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="appointmentDuration"
+                    >Default Appointment Duration</label
+                  >
+                  <select id="appointmentDuration" class="form-control">
+                    <option value="30">30 minutes</option>
+                    <option value="45">45 minutes</option>
+                    <option value="60">60 minutes</option>
+                    <option value="90">90 minutes</option>
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="saveAvailability()"
+                >
+                  <i class="fas fa-save"></i> Save Availability
+                </button>
+              </div>
+
+              <!-- Payment Methods (Hidden by default) -->
+              <div
+                class="settings-section"
+                id="paymentsSection"
+                style="display: none"
+              >
+                <h2><i class="fas fa-credit-card"></i> Payment Methods</h2>
+                <div class="payment-method">
+                  <div class="payment-icon">
+                    <i class="fas fa-credit-card"></i>
+                  </div>
+                  <div style="flex: 1">
+                    <h4>Credit/Debit Card</h4>
+                    <p>**** **** **** 4242</p>
+                  </div>
+                  <button class="btn btn-secondary btn-sm">Edit</button>
+                </div>
+                <div class="payment-method">
+                  <div class="payment-icon">
+                    <i class="fas fa-university"></i>
+                  </div>
+                  <div style="flex: 1">
+                    <h4>Bank Transfer</h4>
+                    <p>Connected to your bank account</p>
+                  </div>
+                  <button class="btn btn-secondary btn-sm">Edit</button>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="addPaymentMethod()"
+                  style="margin-top: 20px"
+                >
+                  <i class="fas fa-plus"></i> Add Payment Method
+                </button>
+              </div>
+
+              <!-- Security (Hidden by default) -->
+              <div
+                class="settings-section"
+                id="securitySection"
+                style="display: none"
+              >
+                <h2><i class="fas fa-shield-alt"></i> Security Settings</h2>
+                <div class="form-group">
+                  <label for="currentPassword">Current Password</label>
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    class="form-control"
+                    placeholder="Enter current password"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="newPassword">New Password</label>
+                  <input
+                    type="password"
+                    id="newPassword"
+                    class="form-control"
+                    placeholder="Enter new password"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="confirmPassword">Confirm New Password</label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    class="form-control"
+                    placeholder="Confirm new password"
+                  />
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="changePassword()"
+                >
+                  <i class="fas fa-key"></i> Change Password
+                </button>
+
+                <h3 style="margin-top: 40px; margin-bottom: 20px">
+                  Two-Factor Authentication
+                </h3>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <h4>Enable 2FA</h4>
+                    <p>Add an extra layer of security to your account</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="twoFactorAuth" />
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  onclick="setupTwoFactor()"
+                >
+                  <i class="fas fa-shield-alt"></i> Setup Two-Factor
+                </button>
+              </div>
+
+              <!-- Account Settings (Hidden by default) -->
+              <div
+                class="settings-section"
+                id="accountSection"
+                style="display: none"
+              >
+                <h2><i class="fas fa-cog"></i> Account Settings</h2>
+                <div class="form-group">
+                  <label for="language">Language</label>
+                  <select id="language" class="form-control">
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="timezone">Timezone</label>
+                  <select id="timezone" class="form-control">
+                    <option value="UTC-5">Eastern Time (ET)</option>
+                    <option value="UTC-6">Central Time (CT)</option>
+                    <option value="UTC-7">Mountain Time (MT)</option>
+                    <option value="UTC-8">Pacific Time (PT)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="currency">Currency</label>
+                  <select id="currency" class="form-control">
+                    <option value="USD">US Dollar ($)</option>
+                    <option value="EUR">Euro (€)</option>
+                    <option value="GBP">British Pound (£)</option>
+                    <option value="NGN">Nigerian Naira (₦)</option>
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="saveAccountSettings()"
+                >
+                  <i class="fas fa-save"></i> Save Account Settings
+                </button>
+
+                <h3
+                  style="
+                    margin-top: 40px;
+                    margin-bottom: 20px;
+                    color: var(--error);
+                  "
+                >
+                  Danger Zone
+                </h3>
+                <div
+                  class="notification-item"
+                  style="border-color: var(--error)"
+                >
+                  <div class="notification-info">
+                    <h4>Delete Account</h4>
+                    <p>Permanently delete your account and all data</p>
+                  </div>
+                  <button class="btn btn-danger" onclick="deleteAccount()">
+                    <i class="fas fa-trash"></i> Delete Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Service Modal -->
+    <div class="modal" id="serviceModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="serviceModalTitle">Add Service</h3>
+          <button class="btn-icon close-modal" onclick="closeServiceModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="serviceForm">
+            <div class="form-group">
+              <label for="serviceName">Service Name</label>
+              <input
+                type="text"
+                id="serviceName"
+                class="form-control"
+                placeholder="e.g., Haircut, Beard Trim"
+              />
+            </div>
+            <div class="form-group">
+              <label for="servicePrice">Price (₦)</label>
+              <input
+                type="number"
+                id="servicePrice"
+                class="form-control"
+                placeholder="e.g., 5000"
+              />
+            </div>
+            <div class="form-group">
+              <label for="serviceDuration">Duration (minutes)</label>
+              <select id="serviceDuration" class="form-control">
+                <option value="15">15 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="45">45 minutes</option>
+                <option value="60">60 minutes</option>
+                <option value="90">90 minutes</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="serviceDescription">Description (Optional)</label>
+              <textarea
+                id="serviceDescription"
+                class="form-control"
+                rows="3"
+                placeholder="Describe the service..."
+              ></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeServiceModal()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="saveService()">
+            Save Service
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+      // Initialize date display
+      document.getElementById("todayDate").textContent =
+        new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
+      // Settings data
+      let currentSection = "profile";
+      let editingServiceId = null;
+      let services = [];
+
+      // Initialize settings page
+      function initSettings() {
+        loadProfileData();
+        loadServices();
+        loadAvailabilityDays();
+        setupEventListeners();
+        setupNavigation();
+      }
+
+      function loadProfileData() {
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        const profile = onboardingData.profile || {};
+        const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+        // Set profile data
+        document.getElementById("firstName").value =
+          profile.name?.split(" ")[0] || "";
+        document.getElementById("lastName").value =
+          profile.name?.split(" ")[1] || "";
+        document.getElementById("email").value =
+          profile.email || "barber@example.com";
+        document.getElementById("phone").value = profile.phone || "";
+        document.getElementById("bio").value = profile.bio || "";
+
+        // Set business info
+        document.getElementById("businessName").value =
+          profile.businessName || profile.name || "";
+        document.getElementById("businessType").value =
+          profile.serviceType || "barbershop";
+        document.getElementById("address").value =
+          profile.address || profile.location || "";
+        document.getElementById("city").value = profile.city || "";
+        document.getElementById("zipCode").value = profile.zipCode || "";
+        document.getElementById("website").value = profile.website || "";
+        document.getElementById("yearsExperience").value =
+          profile.yearsExperience || "1-3";
+
+        // Update profile display
+        const name = profile.name || "Barber";
+        document.getElementById("profileName").textContent = name;
+        document.getElementById("profileInitials").textContent = name
+          .charAt(0)
+          .toUpperCase();
+        document.getElementById("totalBookings").textContent = bookings.length;
+        document.getElementById("memberSince").textContent =
+          new Date().getFullYear();
+
+        // Load notification settings
+        const settings = JSON.parse(localStorage.getItem("settings")) || {};
+        document.getElementById("emailNotifications").checked =
+          settings.emailNotifications !== false;
+        document.getElementById("smsNotifications").checked =
+          settings.smsNotifications || false;
+        document.getElementById("bookingAlerts").checked =
+          settings.bookingAlerts !== false;
+        document.getElementById("reminderAlerts").checked =
+          settings.reminderAlerts !== false;
+
+        // Load account settings
+        document.getElementById("language").value = settings.language || "en";
+        document.getElementById("timezone").value =
+          settings.timezone || "UTC-5";
+        document.getElementById("currency").value = settings.currency || "NGN";
+        document.getElementById("twoFactorAuth").checked =
+          settings.twoFactorAuth || false;
+
+        // Load availability
+        const availability = onboardingData.availability || {};
+        document.getElementById("startTime").value =
+          availability.startTime || "09:00";
+        document.getElementById("endTime").value =
+          availability.endTime || "18:00";
+        document.getElementById("appointmentDuration").value =
+          availability.duration || "30";
+      }
+
+      function loadServices() {
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        services = onboardingData.services || [];
+
+        const container = document.getElementById("servicesList");
+        container.innerHTML = "";
+
+        if (services.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state" style="text-align: center; padding: 40px; color: var(--gray);">
+              <i class="fas fa-cut" style="font-size: 3rem; margin-bottom: 15px; color: var(--light-gray);"></i>
+              <h4>No services added</h4>
+              <p>Add your services to get started</p>
+            </div>
+          `;
+          return;
+        }
+
+        services.forEach((service, index) => {
+          const serviceItem = document.createElement("div");
+          serviceItem.className = "service-item";
+          serviceItem.innerHTML = `
+            <div class="service-info">
+              <h4>${service.name}</h4>
+              <p>${service.description || "No description"}</p>
+            </div>
+            <div>
+              <span class="service-price">₦${service.price}</span>
+              <span style="color: var(--gray); margin: 0 10px;">|</span>
+              <span style="color: var(--gray);">${service.duration} min</span>
+              <div style="margin-top: 8px; display: flex; gap: 8px;">
+                <button class="btn btn-secondary btn-sm" onclick="editService(${index})">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteService(${index})">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </div>
+            </div>
+          `;
+          container.appendChild(serviceItem);
+        });
+      }
+
+      function loadAvailabilityDays() {
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        const availability = onboardingData.availability || {};
+        const workingDays = availability.days || [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+        ];
+
+        const container = document.getElementById("availabilityDays");
+        const days = [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ];
+
+        container.innerHTML = "";
+        days.forEach((day) => {
+          const isChecked = workingDays.includes(day);
+          const dayElement = document.createElement("div");
+          dayElement.style.marginBottom = "10px";
+          dayElement.innerHTML = `
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" value="${day}" ${
+            isChecked ? "checked" : ""
+          } style="width: 18px; height: 18px;">
+              <span>${day}</span>
+            </label>
+          `;
+          container.appendChild(dayElement);
+        });
+      }
+
+      function setupNavigation() {
+        const navItems = document.querySelectorAll(".settings-nav-item");
+        const sections = document.querySelectorAll(".settings-section");
+
+        navItems.forEach((item) => {
+          item.addEventListener("click", (e) => {
+            e.preventDefault();
+            const section = item.getAttribute("data-section");
+
+            // Update active nav item
+            navItems.forEach((nav) => nav.classList.remove("active"));
+            item.classList.add("active");
+
+            // Show selected section
+            sections.forEach((sec) => (sec.style.display = "none"));
+            document.getElementById(`${section}Section`).style.display =
+              "block";
+
+            currentSection = section;
+          });
+        });
+      }
+
+      function setupEventListeners() {
+        // Sidebar toggle
+        const sidebar = document.getElementById("sidebar");
+        const hamburgerBtn = document.getElementById("hamburger-btn");
+        const overlay = document.getElementById("mobile-overlay");
+
+        if (hamburgerBtn) {
+          hamburgerBtn.addEventListener("click", toggleSidebar);
+        }
+
+        if (overlay) {
+          overlay.addEventListener("click", () => {
+            sidebar.classList.remove("mobile-open");
+            overlay.style.opacity = "0";
+            setTimeout(() => (overlay.style.display = "none"), 300);
+          });
+        }
+
+        // Add click event to sidebar toggle icon
+        const toggleIcon = document.querySelector(".sidebar-toggle-icon");
+        if (toggleIcon) {
+          toggleIcon.addEventListener("click", toggleSidebar);
+        }
+
+        // Window resize
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 1024) {
+            sidebar.classList.remove("mobile-open");
+            if (overlay) {
+              overlay.style.display = "none";
+              overlay.style.opacity = "0";
+            }
+          }
+        });
+
+        // Modal close on outside click
+        window.addEventListener("click", (event) => {
+          const modal = document.getElementById("serviceModal");
+          if (event.target === modal) {
+            closeServiceModal();
+          }
+        });
+      }
+
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("mobile-overlay");
+        const isMobile = window.innerWidth <= 1024;
+
+        if (isMobile) {
+          sidebar.classList.toggle("mobile-open");
+          if (sidebar.classList.contains("mobile-open")) {
+            if (overlay) {
+              overlay.style.display = "block";
+              setTimeout(() => (overlay.style.opacity = "1"), 10);
+            }
+          } else {
+            if (overlay) {
+              overlay.style.opacity = "0";
+              setTimeout(() => (overlay.style.display = "none"), 300);
+            }
+          }
+        } else {
+          sidebar.classList.toggle("collapsed");
+        }
+      }
+
+      // Form save functions
+      function saveProfile() {
+        const firstName = document.getElementById("firstName").value.trim();
+        const lastName = document.getElementById("lastName").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const bio = document.getElementById("bio").value.trim();
+
+        if (!firstName || !email) {
+          showToast("First name and email are required", "error");
+          return;
+        }
+
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        onboardingData.profile = {
+          ...onboardingData.profile,
+          name: `${firstName} ${lastName}`.trim(),
+          email: email,
+          phone: phone,
+          bio: bio,
+        };
+
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+
+        // Update profile display
+        document.getElementById("profileName").textContent =
+          `${firstName} ${lastName}`.trim();
+        document.getElementById("profileInitials").textContent = firstName
+          .charAt(0)
+          .toUpperCase();
+
+        showToast("Profile updated successfully", "success");
+      }
+
+      function saveBusinessInfo() {
+        const businessName = document
+          .getElementById("businessName")
+          .value.trim();
+        const businessType = document.getElementById("businessType").value;
+        const address = document.getElementById("address").value.trim();
+        const city = document.getElementById("city").value.trim();
+        const zipCode = document.getElementById("zipCode").value.trim();
+        const website = document.getElementById("website").value.trim();
+        const yearsExperience =
+          document.getElementById("yearsExperience").value;
+
+        if (!businessName || !address) {
+          showToast("Business name and address are required", "error");
+          return;
+        }
+
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        onboardingData.profile = {
+          ...onboardingData.profile,
+          businessName: businessName,
+          serviceType: businessType,
+          address: address,
+          city: city,
+          zipCode: zipCode,
+          website: website,
+          yearsExperience: yearsExperience,
+        };
+
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+        showToast("Business information saved", "success");
+      }
+
+      function addService() {
+        editingServiceId = null;
+        document.getElementById("serviceModalTitle").textContent =
+          "Add Service";
+        document.getElementById("serviceForm").reset();
+        document.getElementById("serviceModal").style.display = "flex";
+      }
+
+      function editService(index) {
+        editingServiceId = index;
+        const service = services[index];
+
+        document.getElementById("serviceModalTitle").textContent =
+          "Edit Service";
+        document.getElementById("serviceName").value = service.name;
+        document.getElementById("servicePrice").value = service.price;
+        document.getElementById("serviceDuration").value = service.duration;
+        document.getElementById("serviceDescription").value =
+          service.description || "";
+
+        document.getElementById("serviceModal").style.display = "flex";
+      }
+
+      function saveService() {
+        const name = document.getElementById("serviceName").value.trim();
+        const price = document.getElementById("servicePrice").value;
+        const duration = document.getElementById("serviceDuration").value;
+        const description = document
+          .getElementById("serviceDescription")
+          .value.trim();
+
+        if (!name || !price) {
+          showToast("Service name and price are required", "error");
+          return;
+        }
+
+        const service = {
+          name: name,
+          price: parseFloat(price),
+          duration: parseInt(duration),
+          description: description,
+        };
+
+        if (editingServiceId !== null) {
+          services[editingServiceId] = service;
+        } else {
+          services.push(service);
+        }
+
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        onboardingData.services = services;
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+
+        closeServiceModal();
+        loadServices();
+        showToast(
+          `Service ${
+            editingServiceId !== null ? "updated" : "added"
+          } successfully`,
+          "success"
+        );
+      }
+
+      function deleteService(index) {
+        if (confirm("Are you sure you want to delete this service?")) {
+          services.splice(index, 1);
+          const onboardingData =
+            JSON.parse(localStorage.getItem("onboardingData")) || {};
+          onboardingData.services = services;
+          localStorage.setItem(
+            "onboardingData",
+            JSON.stringify(onboardingData)
+          );
+          loadServices();
+          showToast("Service deleted", "warning");
+        }
+      }
+
+      function closeServiceModal() {
+        document.getElementById("serviceModal").style.display = "none";
+        document.getElementById("serviceForm").reset();
+        editingServiceId = null;
+      }
+
+      function saveNotificationSettings() {
+        const settings = {
+          emailNotifications:
+            document.getElementById("emailNotifications").checked,
+          smsNotifications: document.getElementById("smsNotifications").checked,
+          bookingAlerts: document.getElementById("bookingAlerts").checked,
+          reminderAlerts: document.getElementById("reminderAlerts").checked,
+        };
+
+        localStorage.setItem("settings", JSON.stringify(settings));
+        showToast("Notification settings saved", "success");
+      }
+
+      function saveAvailability() {
+        const startTime = document.getElementById("startTime").value;
+        const endTime = document.getElementById("endTime").value;
+        const duration = document.getElementById("appointmentDuration").value;
+
+        const workingDays = [];
+        document
+          .querySelectorAll("#availabilityDays input[type='checkbox']:checked")
+          .forEach((checkbox) => {
+            workingDays.push(checkbox.value);
+          });
+
+        if (workingDays.length === 0) {
+          showToast("Please select at least one working day", "error");
+          return;
+        }
+
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        onboardingData.availability = {
+          ...onboardingData.availability,
+          startTime: startTime,
+          endTime: endTime,
+          duration: duration,
+          days: workingDays,
+        };
+
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+        showToast("Availability settings saved", "success");
+      }
+
+      function saveAccountSettings() {
+        const settings = JSON.parse(localStorage.getItem("settings")) || {};
+        settings.language = document.getElementById("language").value;
+        settings.timezone = document.getElementById("timezone").value;
+        settings.currency = document.getElementById("currency").value;
+        settings.twoFactorAuth =
+          document.getElementById("twoFactorAuth").checked;
+
+        localStorage.setItem("settings", JSON.stringify(settings));
+        showToast("Account settings saved", "success");
+      }
+
+      function changePassword() {
+        const currentPassword =
+          document.getElementById("currentPassword").value;
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+          showToast("Please fill in all password fields", "error");
+          return;
+        }
+
+        if (newPassword !== confirmPassword) {
+          showToast("New passwords do not match", "error");
+          return;
+        }
+
+        if (newPassword.length < 6) {
+          showToast("Password must be at least 6 characters long", "error");
+          return;
+        }
+
+        // In a real app, you would send this to your server
+        // For now, just show success message
+        document.getElementById("currentPassword").value = "";
+        document.getElementById("newPassword").value = "";
+        document.getElementById("confirmPassword").value = "";
+        showToast("Password changed successfully", "success");
+      }
+
+      function editProfilePicture() {
+        // In a real app, this would open a file picker
+        showToast("Profile picture edit feature coming soon", "info");
+      }
+
+      function addPaymentMethod() {
+        showToast("Add payment method feature coming soon", "info");
+      }
+
+      function setupTwoFactor() {
+        showToast("Two-factor authentication setup coming soon", "info");
+      }
+
+      function deleteAccount() {
+        if (
+          confirm(
+            "Are you sure you want to delete your account? This action cannot be undone."
+          )
+        ) {
+          showToast("Account deletion feature coming soon", "info");
+        }
+      }
+
+      function showToast(message, type = "info") {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.className = `toast ${type}`;
+
+        let icon = "fas fa-info-circle";
+        if (type === "success") icon = "fas fa-check-circle";
+        if (type === "error") icon = "fas fa-exclamation-circle";
+        if (type === "warning") icon = "fas fa-exclamation-triangle";
+
+        toast.innerHTML = `<i class="${icon}"></i> ${message}`;
+
+        setTimeout(() => toast.classList.add("show"), 10);
+        setTimeout(() => toast.classList.remove("show"), 3000);
+      }
+
+      // Initialize when page loads
+      document.addEventListener("DOMContentLoaded", initSettings);
+    </script>
+  </body>
+</html>
