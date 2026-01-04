@@ -159,7 +159,7 @@ function updateNotificationBadge() {
   return unreadCount;
 }
 
-/* ---------- TOAST ---------- */
+/* ---------- TOAST ---------- *//*
 function showToast(title, message) {
   // Check if toast container exists, if not create it
   let toast = document.getElementById("notification-toast");
@@ -215,7 +215,7 @@ function showToast(title, message) {
       toast.style.animation = "";
     }, 300);
   }, 4000);
-}
+} */
 
 /* ===============================
    NOTIFICATION TYPES
@@ -591,3 +591,4 @@ window.TrimlyNotifications = {
   clearAllNotifications,
   init: initTrimlyNotifications,
 };
+
