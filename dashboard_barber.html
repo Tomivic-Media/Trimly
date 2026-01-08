@@ -1063,14 +1063,58 @@
           justify-content: space-between;
         }
       }
+
+      .calendar-day.available-day {
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .calendar-day {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+      }
+
+      .calendar-day:hover {
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .calendar-day.available-day:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .calendar-day.other-month {
+        cursor: default;
+        opacity: 0.4;
+      }
+
+      .calendar-day.other-month:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .calendar-day.today.available-day {
+        border: 2px solid #ffffff;
+        box-shadow: 0 0 0 2px #000000;
+      }
     </style>
   </head>
   <body>
     <script>
-      // Check if onboarding is complete
-      /*   if (!localStorage.getItem("onboardingComplete")) {
-        window.location.href = "onboarding_barber.html";
-      } */
+      // Check if onboarding is complete - FIXED WITH PROPER CHECK
+      const onboardingComplete = localStorage.getItem("onboardingComplete");
+      const hasOnboardingData = localStorage.getItem("onboardingData");
+
+      // Only redirect if onboarding is not complete AND no data exists
+      if (!onboardingComplete || onboardingComplete !== "true") {
+        if (!hasOnboardingData) {
+          window.location.href = "onboarding_barber.html";
+        } else {
+          // If there's data but flag isn't set, set it now
+          localStorage.setItem("onboardingComplete", "true");
+        }
+      }
     </script>
 
     <div class="app-container">
@@ -1376,14 +1420,28 @@
               <!-- Calendar -->
               <section class="card mini-calendar">
                 <div class="card-header">
-                  <h3><i class="fas fa-calendar-alt"></i> Calendar</h3>
-                  <div class="month-nav">
-                    <button id="prevMonth" class="btn-icon">
-                      <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <span id="currentMonth"></span>
-                    <button id="nextMonth" class="btn-icon">
-                      <i class="fas fa-chevron-right"></i>
+                  <div class="card-title">
+                    <h3><i class="fas fa-calendar-alt"></i> Calendar</h3>
+                    <span class="card-subtitle"
+                      >Click days to toggle availability</span
+                    >
+                  </div>
+                  <div class="card-actions">
+                    <div class="month-nav">
+                      <button id="prevMonth" class="btn-icon">
+                        <i class="fas fa-chevron-left"></i>
+                      </button>
+                      <span id="currentMonth"></span>
+                      <button id="nextMonth" class="btn-icon">
+                        <i class="fas fa-chevron-right"></i>
+                      </button>
+                    </div>
+                    <button
+                      class="btn-icon"
+                      onclick="clearAllAvailability()"
+                      title="Clear all availability"
+                    >
+                      <i class="fas fa-trash-alt"></i>
                     </button>
                   </div>
                 </div>
@@ -1421,9 +1479,16 @@
               </section>
 
               <!-- Quick Actions -->
+              <!-- Quick Actions -->
               <section class="card quick-actions">
                 <div class="card-header">
                   <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                  <button
+                    class="btn btn-secondary btn-sm"
+                    onclick="syncWithOnboarding()"
+                  >
+                    <i class="fas fa-sync"></i> Sync Calendar
+                  </button>
                 </div>
                 <div class="action-grid">
                   <button class="action-card" onclick="addBooking()">
@@ -1435,7 +1500,7 @@
                     </div>
                     <span>Add Booking</span>
                   </button>
-                  <button class="action-card" onclick="blockTime()">
+                  <button class="action-card" onclick="blockTimeModal()">
                     <div class="action-icon" style="background: #f3e5f5">
                       <i class="fas fa-ban" style="color: #7b1fa2"></i>
                     </div>
@@ -1448,9 +1513,12 @@
                         style="color: #388e3c"
                       ></i>
                     </div>
-                    <span>View All</span>
+                    <span>View All Bookings</span>
                   </button>
-                  <button class="action-card" onclick="manageAvailability()">
+                  <button
+                    class="action-card"
+                    onclick="manageAvailabilityModal()"
+                  >
                     <div class="action-icon" style="background: #fff3e0">
                       <i class="fas fa-user-clock" style="color: #f57c00"></i>
                     </div>
@@ -1658,6 +1726,210 @@
       </div>
     </div>
 
+    <!-- Block Time Modal -->
+    <div class="modal" id="blockTimeModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-ban"></i> Block Time</h3>
+          <button class="btn-icon close-modal" onclick="closeBlockTimeModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="blockTimeForm">
+            <div class="form-group">
+              <label for="blockDate"
+                ><i class="fas fa-calendar"></i> Date</label
+              >
+              <input type="date" id="blockDate" required />
+            </div>
+            <div class="form-group">
+              <label for="blockStartTime"
+                ><i class="fas fa-clock"></i> Start Time</label
+              >
+              <input type="time" id="blockStartTime" value="09:00" required />
+            </div>
+            <div class="form-group">
+              <label for="blockEndTime"
+                ><i class="fas fa-clock"></i> End Time</label
+              >
+              <input type="time" id="blockEndTime" value="18:00" required />
+            </div>
+            <div class="form-group">
+              <label for="blockReason"
+                ><i class="fas fa-sticky-note"></i> Reason (Optional)</label
+              >
+              <input
+                type="text"
+                id="blockReason"
+                placeholder="Lunch break, Personal time, etc."
+              />
+            </div>
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="repeatWeekly" />
+                <i class="fas fa-redo"></i> Repeat weekly
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeBlockTimeModal()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="saveBlockTime()">
+            <i class="fas fa-ban"></i> Block Time
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- View All Bookings Modal -->
+    <div class="modal" id="viewAllBookingsModal">
+      <div class="modal-content" style="max-width: 800px">
+        <div class="modal-header">
+          <h3><i class="fas fa-calendar-week"></i> All Bookings</h3>
+          <div style="display: flex; gap: 10px">
+            <select
+              id="bookingFilter"
+              onchange="filterBookingsView()"
+              style="padding: 6px 12px; border-radius: 6px"
+            >
+              <option value="all">All Bookings</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="past">Past</option>
+              <option value="today">Today</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="pending">Pending</option>
+            </select>
+            <button class="btn-icon close-modal" onclick="closeViewAllModal()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div id="allBookingsList" style="max-height: 400px; overflow-y: auto">
+            <!-- Bookings will be loaded here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="exportBookings()">
+            <i class="fas fa-download"></i> Export
+          </button>
+          <button class="btn btn-primary" onclick="addBooking()">
+            <i class="fas fa-plus"></i> Add Booking
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manage Availability Modal -->
+    <div class="modal" id="manageAvailabilityModal">
+      <div class="modal-content" style="max-width: 700px">
+        <div class="modal-header">
+          <h3><i class="fas fa-user-clock"></i> Manage Availability</h3>
+          <button
+            class="btn-icon close-modal"
+            onclick="closeManageAvailabilityModal()"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
+            <div>
+              <h4 style="margin-bottom: 16px">
+                <i class="fas fa-clock"></i> Business Hours
+              </h4>
+              <div class="form-group">
+                <label for="availabilityStartTime">Start Time</label>
+                <input type="time" id="availabilityStartTime" value="09:00" />
+              </div>
+              <div class="form-group">
+                <label for="availabilityEndTime">End Time</label>
+                <input type="time" id="availabilityEndTime" value="18:00" />
+              </div>
+              <button
+                class="btn btn-primary"
+                onclick="updateBusinessHours()"
+                style="margin-top: 10px"
+              >
+                <i class="fas fa-save"></i> Update Hours
+              </button>
+            </div>
+            <div>
+              <h4 style="margin-bottom: 16px">
+                <i class="fas fa-calendar-alt"></i> Quick Selection
+              </h4>
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <button class="btn btn-secondary" onclick="selectAllWeekdays()">
+                  <i class="fas fa-calendar-day"></i> All Weekdays
+                </button>
+                <button class="btn btn-secondary" onclick="selectWeekends()">
+                  <i class="fas fa-calendar-weekend"></i> Weekends Only
+                </button>
+                <button class="btn btn-secondary" onclick="selectNext7Days()">
+                  <i class="fas fa-calendar-plus"></i> Next 7 Days
+                </button>
+                <button class="btn btn-danger" onclick="clearAllAvailability()">
+                  <i class="fas fa-trash"></i> Clear All
+                </button>
+              </div>
+              <div
+                style="
+                  margin-top: 20px;
+                  padding: 12px;
+                  background: #f3f4f6;
+                  border-radius: 8px;
+                "
+              >
+                <p style="font-size: 0.9rem; color: #6b7280">
+                  <i class="fas fa-info-circle"></i>
+                  Click on calendar days in dashboard to toggle individual
+                  availability.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              margin-top: 24px;
+              padding-top: 24px;
+              border-top: 1px solid #e5e7eb;
+            "
+          >
+            <h4 style="margin-bottom: 16px">
+              <i class="fas fa-list"></i> Current Available Days
+            </h4>
+            <div
+              id="availabilityList"
+              style="
+                max-height: 200px;
+                overflow-y: auto;
+                padding: 12px;
+                background: #f9fafb;
+                border-radius: 8px;
+              "
+            >
+              <!-- Available days will be listed here -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="closeManageAvailabilityModal()"
+          >
+            Close
+          </button>
+          <button class="btn btn-primary" onclick="syncWithOnboarding()">
+            <i class="fas fa-sync"></i> Sync with Onboarding
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
 
@@ -1746,15 +2018,15 @@
 
         if (!services || services.length === 0) {
           servicesList.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-cut"></i>
-                <h4>No services added</h4>
-                <p>Add your services to get started</p>
-                <button class="btn btn-primary btn-sm" onclick="manageServices()" style="margin-top: 10px;">
-                    <i class="fas fa-plus"></i> Add Services
-                </button>
-            </div>
-        `;
+              <div class="empty-state">
+                  <i class="fas fa-cut"></i>
+                  <h4>No services added</h4>
+                  <p>Add your services to get started</p>
+                  <button class="btn btn-primary btn-sm" onclick="manageServices()" style="margin-top: 10px;">
+                      <i class="fas fa-plus"></i> Add Services
+                  </button>
+              </div>
+          `;
           return;
         }
 
@@ -1777,10 +2049,10 @@
           const serviceCard = document.createElement("div");
           serviceCard.className = "service-card";
           serviceCard.innerHTML = `
-            <h5>${service.name}</h5>
-            <div class="service-price">₦${service.price}</div>
-            <div class="service-duration">${service.duration} minutes</div>
-        `;
+              <h5>${service.name}</h5>
+              <div class="service-price">₦${service.price}</div>
+              <div class="service-duration">${service.duration} minutes</div>
+          `;
           servicesList.appendChild(serviceCard);
         });
       }
@@ -1789,7 +2061,7 @@
       function loadBookings() {
         bookings = JSON.parse(localStorage.getItem("bookings")) || [];
 
-        // If no bookings, create sample data
+        // If no bookings, create sample data with proper structure
         if (bookings.length === 0) {
           const todayStr = today.toISOString().split("T")[0];
           const tomorrow = new Date(today);
@@ -1804,10 +2076,10 @@
               date: todayStr,
               time: "10:00",
               duration: 30,
-              price: 5000, // Changed from 25 to 5000 (Naira equivalent)
+              price: 5000,
               status: "confirmed",
-              phone: "+1 (555) 123-4567",
-              notes: "Regular customer",
+              phone: "+234 123 456 7890",
+              notes: "Regular customer, prefers fade haircut",
             },
             {
               id: 2,
@@ -1816,14 +2088,69 @@
               date: todayStr,
               time: "14:00",
               duration: 20,
-              price: 3000, // Changed from 15 to 3000
+              price: 3000,
               status: "confirmed",
-              phone: "+1 (555) 987-6543",
+              phone: "+234 987 654 3210",
               notes: "First time customer",
+            },
+            {
+              id: 3,
+              customer: "David Johnson",
+              service: "Haircut & Beard Trim",
+              date: tomorrowStr,
+              time: "11:00",
+              duration: 45,
+              price: 7000,
+              status: "pending",
+              phone: "+234 456 789 0123",
+              notes: "Special request: Hot towel treatment",
+            },
+            {
+              id: 4,
+              customer: "Robert Williams",
+              service: "Haircut",
+              date: tomorrowStr,
+              time: "15:30",
+              duration: 30,
+              price: 5000,
+              status: "confirmed",
+              phone: "+234 789 012 3456",
+              notes: "VIP customer",
             },
           ];
           localStorage.setItem("bookings", JSON.stringify(bookings));
         }
+
+        // Clean up any bookings with missing required fields
+        bookings = bookings.filter((booking) => {
+          if (!booking || typeof booking !== "object") return false;
+
+          // Ensure required fields exist
+          if (!booking.customer && !booking.name) {
+            booking.customer = "Unknown Customer";
+          }
+
+          if (!booking.service && !booking.serviceType) {
+            booking.service = "Haircut";
+          }
+
+          if (!booking.status) {
+            booking.status = "pending";
+          }
+
+          if (!booking.price) {
+            booking.price = 5000; // Default price
+          }
+
+          if (!booking.duration) {
+            booking.duration = 30; // Default duration
+          }
+
+          return true;
+        });
+
+        // Save cleaned data back to localStorage
+        localStorage.setItem("bookings", JSON.stringify(bookings));
       }
 
       function loadTodayBookings() {
@@ -1838,15 +2165,15 @@
 
         if (todaysBookings.length === 0) {
           container.innerHTML = `
-            <div class="empty-state">
-              <i class="far fa-calendar-times"></i>
-              <h4>No bookings today</h4>
-              <p>You're all caught up! Enjoy your day.</p>
-              <button class="btn btn-primary" onclick="addBooking()" style="margin-top: 15px;">
-                <i class="fas fa-plus-circle"></i> Add Booking
-              </button>
-            </div>
-          `;
+              <div class="empty-state">
+                <i class="far fa-calendar-times"></i>
+                <h4>No bookings today</h4>
+                <p>You're all caught up! Enjoy your day.</p>
+                <button class="btn btn-primary" onclick="addBooking()" style="margin-top: 15px;">
+                  <i class="fas fa-plus-circle"></i> Add Booking
+                </button>
+              </div>
+            `;
           return;
         }
 
@@ -1856,22 +2183,23 @@
           bookingItem.className = "booking-item active";
           bookingItem.onclick = () => openModal(booking);
           bookingItem.innerHTML = `
-            <div class="booking-info">
-              <h4>${booking.customer}</h4>
-              <div class="booking-meta">
-                <span><i class="far fa-clock"></i> ${booking.time}</span>
-                <span><i class="fas fa-cut"></i> ${booking.service}</span>
-                <span><i class="far fa-clock"></i> ${
-                  booking.duration
-                } min</span>
+              <div class="booking-info">
+                <h4>${booking.customer}</h4>
+                <div class="booking-meta">
+                  <span><i class="far fa-clock"></i> ${booking.time}</span>
+                  <span><i class="fas fa-cut"></i> ${booking.service}</span>
+                  <span><i class="far fa-clock"></i> ${
+                    booking.duration
+                  } min</span>
+                </div>
               </div>
-            </div>
-            <div class="booking-status status-${booking.status}">
-              ${
-                booking.status.charAt(0).toUpperCase() + booking.status.slice(1)
-              }
-            </div>
-          `;
+              <div class="booking-status status-${booking.status}">
+                ${
+                  booking.status.charAt(0).toUpperCase() +
+                  booking.status.slice(1)
+                }
+              </div>
+            `;
           container.appendChild(bookingItem);
         });
 
@@ -1944,6 +2272,7 @@
           const dayElement = document.createElement("div");
           dayElement.className = "calendar-day";
           dayElement.textContent = d;
+          dayElement.dataset.date = dateKey; // Store date for click handling
 
           // Check if it's today
           if (
@@ -1960,15 +2289,27 @@
             dayElement.classList.add("has-booking");
           }
 
-          // Check availability
+          // Check availability and make clickable
           const onboardingData =
             JSON.parse(localStorage.getItem("onboardingData")) || {};
           const availability = onboardingData.availability || {};
           const availableDays = availability.days || [];
-          if (availableDays.includes(dateKey)) {
-            dayElement.style.backgroundColor = "#d1fae5";
-            dayElement.style.borderColor = "#10b981";
+
+          // Check if this specific date is in availableDays
+          const isAvailable = availableDays.includes(dateKey);
+
+          if (isAvailable) {
+            dayElement.classList.add("available-day");
+            dayElement.style.backgroundColor = "#000000";
+            dayElement.style.color = "#ffffff";
+            dayElement.style.borderColor = "#000000";
+            dayElement.title = "Available (click to remove)";
+          } else {
+            dayElement.title = "Not available (click to add)";
           }
+
+          // Add click event to toggle availability
+          dayElement.addEventListener("click", toggleDayAvailability);
 
           calendar.appendChild(dayElement);
         }
@@ -2001,19 +2342,29 @@
         const availability = onboardingData.availability || {};
         const availableDays = availability.days || [];
 
+        // Count available days in current month
+        const currentMonthStart = `${currentYear}-${String(
+          currentMonth + 1
+        ).padStart(2, "0")}-01`;
+        const currentMonthEnd = `${currentYear}-${String(
+          currentMonth + 1
+        ).padStart(2, "0")}-${new Date(
+          currentYear,
+          currentMonth + 1,
+          0
+        ).getDate()}`;
+
         const availableDaysCount = availableDays.filter((day) => {
-          const dayDate = new Date(day);
-          return (
-            dayDate.getMonth() === currentMonth &&
-            dayDate.getFullYear() === currentYear
-          );
+          return day >= currentMonthStart && day <= currentMonthEnd;
         }).length;
 
-        document.getElementById("availableDays").textContent =
-          availableDaysCount;
+        // Also update total count in welcome section
+        const totalAvailable = availableDays.length;
+        document.getElementById("availableDays").textContent = totalAvailable;
+
         document.getElementById(
           "availableDaysCount"
-        ).textContent = `${availableDaysCount} days available`;
+        ).textContent = `${availableDaysCount} days available this month`;
       }
 
       // Modal functions
@@ -2021,7 +2372,21 @@
         const modal = document.getElementById("bookingModal");
         const details = document.getElementById("bookingDetails");
 
-        const bookingDate = new Date(booking.date);
+        // Ensure booking has all required fields
+        const safeBooking = {
+          ...booking,
+          customer: booking.customer || booking.name || "Unknown Customer",
+          service: booking.service || booking.serviceType || "Haircut",
+          date: booking.date || new Date().toISOString().split("T")[0],
+          time: booking.time || "10:00",
+          duration: booking.duration || 30,
+          price: booking.price || 5000,
+          status: booking.status || "pending",
+          phone: booking.phone || "No phone provided",
+          notes: booking.notes || "No notes provided.",
+        };
+
+        const bookingDate = new Date(safeBooking.date);
         const formattedDate = bookingDate.toLocaleDateString("en-US", {
           weekday: "long",
           year: "numeric",
@@ -2030,50 +2395,55 @@
         });
 
         details.innerHTML = `
-          <div style="margin-bottom: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <h3 style="margin: 0;">${booking.customer}</h3>
-              <span class="booking-status status-${
-                booking.status
-              }" style="padding: 6px 12px;">
-                ${
-                  booking.status.charAt(0).toUpperCase() +
-                  booking.status.slice(1)
-                }
-              </span>
-            </div>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
-            <div>
-              <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Service</div>
-              <div style="font-weight: 600;">${booking.service}</div>
-            </div>
-            <div>
-              <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Duration</div>
-              <div style="font-weight: 600;">${booking.duration} minutes</div>
-            </div>
-            <div>
-              <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Date</div>
-              <div style="font-weight: 600;">${formattedDate}</div>
-            </div>
-            <div>
-              <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Time</div>
-              <div style="font-weight: 600;">${booking.time}</div>
-            </div>
-          </div>
-          <div style="margin-bottom: 20px;">
-            <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Price</div>
-           <div style="font-weight: 600; font-size: 1.5rem;">₦${
-             booking.price
-           }</div>
-          </div>
-          <div>
-            <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Notes</div>
-            <div style="background: #f3f4f6; padding: 12px; border-radius: 8px;">
-              ${booking.notes || "No notes provided."}
-            </div>
-          </div>
-        `;
+      <div style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="margin: 0;">${safeBooking.customer}</h3>
+          <span class="booking-status status-${
+            safeBooking.status
+          }" style="padding: 6px 12px;">
+            ${
+              safeBooking.status.charAt(0).toUpperCase() +
+              safeBooking.status.slice(1)
+            }
+          </span>
+        </div>
+        ${
+          safeBooking.phone
+            ? `<p style="margin: 8px 0 0 0; color: #6b7280;"><i class="fas fa-phone"></i> ${safeBooking.phone}</p>`
+            : ""
+        }
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+        <div>
+          <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Service</div>
+          <div style="font-weight: 600;">${safeBooking.service}</div>
+        </div>
+        <div>
+          <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Duration</div>
+          <div style="font-weight: 600;">${safeBooking.duration} minutes</div>
+        </div>
+        <div>
+          <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Date</div>
+          <div style="font-weight: 600;">${formattedDate}</div>
+        </div>
+        <div>
+          <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Time</div>
+          <div style="font-weight: 600;">${formatTime(safeBooking.time)}</div>
+        </div>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Price</div>
+        <div style="font-weight: 600; font-size: 1.5rem;">₦${
+          safeBooking.price
+        }</div>
+      </div>
+      <div>
+        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 5px;">Notes</div>
+        <div style="background: #f3f4f6; padding: 12px; border-radius: 8px;">
+          ${safeBooking.notes}
+        </div>
+      </div>
+    `;
 
         modal.style.display = "flex";
       }
@@ -2252,41 +2622,41 @@
 
         if (services.length === 0) {
           servicesList.innerHTML = `
-            <div style="text-align: center; padding: 20px; color: #6b7280;">
-              <i class="fas fa-cut" style="font-size: 2rem; margin-bottom: 10px;"></i>
-              <p>No services added yet</p>
-            </div>
-          `;
+              <div style="text-align: center; padding: 20px; color: #6b7280;">
+                <i class="fas fa-cut" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <p>No services added yet</p>
+              </div>
+            `;
         } else {
           services.forEach((service, index) => {
             const serviceItem = document.createElement("div");
             serviceItem.style.cssText =
               "display: flex; gap: 10px; margin-bottom: 10px; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px;";
             serviceItem.innerHTML = `
-              <input type="text" value="${
-                service.name
-              }" style="flex: 2; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;" placeholder="Service name">
-              <input type="number" value="${
-                service.price
-              }" style="flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;" placeholder="Price">
-              <select style="flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
-                <option value="15" ${
-                  service.duration == 15 ? "selected" : ""
-                }>15 min</option>
-                <option value="30" ${
-                  service.duration == 30 ? "selected" : ""
-                }>30 min</option>
-                <option value="45" ${
-                  service.duration == 45 ? "selected" : ""
-                }>45 min</option>
-                <option value="60" ${
-                  service.duration == 60 ? "selected" : ""
-                }>60 min</option>
-              </select>
-              <button onclick="removeService(${index})" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 8px; cursor: pointer;">
-                <i class="fas fa-trash"></i>
-              </button>
-            `;
+                <input type="text" value="${
+                  service.name
+                }" style="flex: 2; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;" placeholder="Service name">
+                <input type="number" value="${
+                  service.price
+                }" style="flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;" placeholder="Price">
+                <select style="flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                  <option value="15" ${
+                    service.duration == 15 ? "selected" : ""
+                  }>15 min</option>
+                  <option value="30" ${
+                    service.duration == 30 ? "selected" : ""
+                  }>30 min</option>
+                  <option value="45" ${
+                    service.duration == 45 ? "selected" : ""
+                  }>45 min</option>
+                  <option value="60" ${
+                    service.duration == 60 ? "selected" : ""
+                  }>60 min</option>
+                </select>
+                <button onclick="removeService(${index})" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 8px; cursor: pointer;">
+                  <i class="fas fa-trash"></i>
+                </button>
+              `;
             servicesList.appendChild(serviceItem);
           });
         }
@@ -2300,18 +2670,18 @@
         serviceItem.style.cssText =
           "display: flex; gap: 10px; margin-bottom: 10px; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px;";
         serviceItem.innerHTML = `
-          <input type="text" value="" style="flex: 2; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;" placeholder="Service name">
-          <input type="number" value="" style="flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;" placeholder="Price">
-          <select style="flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
-            <option value="15">15 min</option>
-            <option value="30" selected>30 min</option>
-            <option value="45">45 min</option>
-            <option value="60">60 min</option>
-          </select>
-          <button onclick="this.parentElement.remove()" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 8px; cursor: pointer;">
-            <i class="fas fa-trash"></i>
-          </button>
-        `;
+            <input type="text" value="" style="flex: 2; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;" placeholder="Service name">
+            <input type="number" value="" style="flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;" placeholder="Price">
+            <select style="flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+              <option value="15">15 min</option>
+              <option value="30" selected>30 min</option>
+              <option value="45">45 min</option>
+              <option value="60">60 min</option>
+            </select>
+            <button onclick="this.parentElement.remove()" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 8px; cursor: pointer;">
+              <i class="fas fa-trash"></i>
+            </button>
+          `;
         servicesList.appendChild(serviceItem);
       }
 
@@ -2437,6 +2807,131 @@
         setTimeout(() => toast.classList.remove("show"), 3000);
       }
 
+      function toggleDayAvailability(event) {
+        const dayElement = event.currentTarget;
+        const dateKey = dayElement.dataset.date;
+
+        // Don't allow toggling for past dates
+        const dateObj = new Date(dateKey);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (dateObj < today) {
+          showToast("Cannot modify availability for past dates", "warning");
+          return;
+        }
+
+        // Get current availability
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        if (!onboardingData.availability) {
+          onboardingData.availability = {};
+        }
+
+        const availability = onboardingData.availability;
+        if (!availability.days) {
+          availability.days = [];
+        }
+
+        const availableDays = availability.days;
+
+        // Check if date is already available
+        const isAvailable = availableDays.includes(dateKey);
+
+        if (isAvailable) {
+          // Remove from available days
+          const index = availableDays.indexOf(dateKey);
+          availableDays.splice(index, 1);
+
+          // Update UI
+          dayElement.classList.remove("available-day");
+          dayElement.style.backgroundColor = "";
+          dayElement.style.color = "";
+          dayElement.style.borderColor = "";
+          dayElement.title = "Not available (click to add)";
+
+          showToast(`Removed ${formatDate(dateKey)} from availability`, "info");
+        } else {
+          // Add to available days
+          availableDays.push(dateKey);
+
+          // Sort dates chronologically
+          availableDays.sort();
+
+          // Update UI
+          dayElement.classList.add("available-day");
+          dayElement.style.backgroundColor = "#000000";
+          dayElement.style.color = "#ffffff";
+          dayElement.style.borderColor = "#000000";
+          dayElement.title = "Available (click to remove)";
+
+          showToast(`Added ${formatDate(dateKey)} to availability`, "success");
+        }
+
+        // Save to localStorage
+        onboardingData.availability.days = availableDays;
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+
+        // Update availability count
+        updateAvailabilityCount();
+
+        // Also update welcome section count
+        const totalAvailable = availableDays.length;
+        document.getElementById("availableDays").textContent = totalAvailable;
+      }
+
+      function clearAllAvailability() {
+        if (
+          !confirm(
+            "Clear all availability for this month? This will remove all selected available days."
+          )
+        ) {
+          return;
+        }
+
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        if (!onboardingData.availability || !onboardingData.availability.days) {
+          showToast("No availability to clear", "info");
+          return;
+        }
+
+        // Filter out dates from current month
+        const currentMonthStart = `${currentYear}-${String(
+          currentMonth + 1
+        ).padStart(2, "0")}-01`;
+        const currentMonthEnd = `${currentYear}-${String(
+          currentMonth + 1
+        ).padStart(2, "0")}-${new Date(
+          currentYear,
+          currentMonth + 1,
+          0
+        ).getDate()}`;
+
+        const availableDays = onboardingData.availability.days;
+        const remainingDays = availableDays.filter((date) => {
+          return date < currentMonthStart || date > currentMonthEnd;
+        });
+
+        onboardingData.availability.days = remainingDays;
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+
+        // Reload calendar
+        loadMiniCalendar();
+        updateAvailabilityCount();
+
+        showToast("Cleared availability for this month", "warning");
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        });
+      }
+
       // Sidebar functionality
       function toggleSidebar() {
         const sidebar = document.getElementById("sidebar");
@@ -2459,8 +2954,721 @@
           sidebar.classList.toggle("collapsed");
         }
       }
+
+      function syncOnboardingAvailability() {
+        // Get onboarding data
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        const availability = onboardingData.availability || {};
+
+        // If no availability is set, create default from onboarding
+        if (!availability.days || availability.days.length === 0) {
+          // Try to get weekly pattern
+          const weeklyPattern = availability.weeklyPattern || [];
+
+          if (weeklyPattern.length > 0) {
+            // Generate availability for next 30 days based on weekly pattern
+            const today = new Date();
+            const availableDays = [];
+            const dayNames = [
+              "sunday",
+              "monday",
+              "tuesday",
+              "wednesday",
+              "thursday",
+              "friday",
+              "saturday",
+            ];
+
+            for (let i = 0; i < 30; i++) {
+              const date = new Date(today);
+              date.setDate(date.getDate() + i);
+              const dayOfWeek = dayNames[date.getDay()];
+
+              if (weeklyPattern.includes(dayOfWeek)) {
+                const dateString = date.toISOString().split("T")[0];
+                availableDays.push(dateString);
+              }
+            }
+
+            availability.days = availableDays;
+            onboardingData.availability = availability;
+            localStorage.setItem(
+              "onboardingData",
+              JSON.stringify(onboardingData)
+            );
+          }
+        }
+      }
+
+      function migrateOnboardingDates() {
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        if (!onboardingData.availability || !onboardingData.availability.days)
+          return;
+
+        const convertedDates = onboardingData.availability.days.map(
+          (dateStr) => {
+            // Convert from "2024-1-8" to "2024-01-08"
+            if (dateStr && dateStr.includes("-")) {
+              const parts = dateStr.split("-");
+              if (parts.length === 3) {
+                const [year, month, day] = parts;
+                // Only convert if not already in correct format
+                if (month.length < 2 || day.length < 2) {
+                  return `${year}-${String(month).padStart(2, "0")}-${String(
+                    day
+                  ).padStart(2, "0")}`;
+                }
+              }
+            }
+            return dateStr;
+          }
+        );
+
+        onboardingData.availability.days = convertedDates;
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+        console.log("Migrated dates:", convertedDates);
+      }
+
+      // ===== BLOCK TIME FUNCTIONS =====
+      function blockTimeModal() {
+        const modal = document.getElementById("blockTimeModal");
+        const todayStr = new Date().toISOString().split("T")[0];
+
+        document.getElementById("blockDate").value = todayStr;
+        document.getElementById("blockDate").min = todayStr;
+
+        modal.style.display = "flex";
+      }
+
+      function closeBlockTimeModal() {
+        document.getElementById("blockTimeModal").style.display = "none";
+        document.getElementById("blockTimeForm").reset();
+      }
+
+      function saveBlockTime() {
+        const date = document.getElementById("blockDate").value;
+        const startTime = document.getElementById("blockStartTime").value;
+        const endTime = document.getElementById("blockEndTime").value;
+        const reason =
+          document.getElementById("blockReason").value || "Blocked time";
+        const repeatWeekly = document.getElementById("repeatWeekly").checked;
+
+        if (!date || !startTime || !endTime) {
+          showToast("Please fill in all required fields", "error");
+          return;
+        }
+
+        // Get existing blocked times
+        let blockedTimes =
+          JSON.parse(localStorage.getItem("blockedTimes")) || [];
+
+        const newBlock = {
+          id: Date.now(),
+          date: date,
+          startTime: startTime,
+          endTime: endTime,
+          reason: reason,
+          repeatWeekly: repeatWeekly,
+          createdAt: new Date().toISOString(),
+        };
+
+        blockedTimes.push(newBlock);
+        localStorage.setItem("blockedTimes", JSON.stringify(blockedTimes));
+
+        // If repeating weekly, add future blocks
+        if (repeatWeekly) {
+          for (let i = 1; i <= 12; i++) {
+            // 12 weeks ahead
+            const nextDate = new Date(date);
+            nextDate.setDate(nextDate.getDate() + 7 * i);
+            const nextDateStr = nextDate.toISOString().split("T")[0];
+
+            blockedTimes.push({
+              ...newBlock,
+              id: Date.now() + i,
+              date: nextDateStr,
+              originalBlockId: newBlock.id,
+            });
+          }
+          localStorage.setItem("blockedTimes", JSON.stringify(blockedTimes));
+        }
+
+        closeBlockTimeModal();
+        showToast(
+          `Time blocked from ${formatTime(startTime)} to ${formatTime(
+            endTime
+          )} on ${formatDate(date)}`,
+          "success"
+        );
+
+        // Refresh calendar to show blocked times
+        loadMiniCalendar();
+      }
+
+      // ===== VIEW ALL BOOKINGS FUNCTIONS =====
+      function viewAllBookings() {
+        const modal = document.getElementById("viewAllBookingsModal");
+        loadAllBookingsView();
+        modal.style.display = "flex";
+      }
+
+      function closeViewAllModal() {
+        document.getElementById("viewAllBookingsModal").style.display = "none";
+      }
+
+      function loadAllBookingsView(filter = "all") {
+        const container = document.getElementById("allBookingsList");
+        container.innerHTML = "";
+
+        // Ensure bookings array exists
+        if (!bookings || !Array.isArray(bookings)) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px; color: #6b7280;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                <h4>No booking data found</h4>
+                <p>Please add some bookings to get started</p>
+            </div>
+        `;
+          return;
+        }
+
+        let filteredBookings = [...bookings];
+
+        // Apply filters
+        const today = new Date().toISOString().split("T")[0];
+
+        switch (filter) {
+          case "upcoming":
+            filteredBookings = bookings.filter(
+              (b) => b.date && b.date >= today
+            );
+            break;
+          case "past":
+            filteredBookings = bookings.filter((b) => b.date && b.date < today);
+            break;
+          case "today":
+            filteredBookings = bookings.filter(
+              (b) => b.date && b.date === today
+            );
+            break;
+          case "confirmed":
+            filteredBookings = bookings.filter((b) => b.status === "confirmed");
+            break;
+          case "pending":
+            filteredBookings = bookings.filter((b) => b.status === "pending");
+            break;
+          // 'all' shows everything
+        }
+
+        // Filter out any invalid bookings (missing required fields)
+        filteredBookings = filteredBookings.filter((booking) => {
+          return (
+            booking &&
+            (booking.customer || booking.name) && // Check both possible field names
+            booking.date &&
+            booking.time
+          );
+        });
+
+        // Sort by date then time
+        filteredBookings.sort((a, b) => {
+          if (a.date === b.date) {
+            return (a.time || "").localeCompare(b.time || "");
+          }
+          return (a.date || "").localeCompare(b.date || "");
+        });
+
+        if (filteredBookings.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px; color: #6b7280;">
+                <i class="far fa-calendar-times" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                <h4>No bookings found</h4>
+                <p>Try a different filter or add some bookings</p>
+            </div>
+        `;
+          return;
+        }
+
+        filteredBookings.forEach((booking) => {
+          // Get customer name from either 'customer' or 'name' field
+          const customerName =
+            booking.customer || booking.name || "Unknown Customer";
+          const serviceName =
+            booking.service || booking.serviceType || "Haircut";
+          const bookingStatus = booking.status || "pending";
+          const bookingPrice = booking.price || 0;
+          const bookingTime = booking.time || "12:00";
+          const bookingDate = booking.date || today;
+          const bookingNotes = booking.notes || "";
+
+          const bookingDateObj = new Date(bookingDate);
+          const formattedDate = bookingDateObj.toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          });
+
+          const bookingItem = document.createElement("div");
+          bookingItem.className = "booking-item";
+          bookingItem.style.marginBottom = "12px";
+          bookingItem.style.padding = "16px";
+          bookingItem.style.border = "1px solid #e5e7eb";
+          bookingItem.style.borderRadius = "8px";
+          bookingItem.style.cursor = "pointer";
+          bookingItem.style.transition = "all 0.2s ease";
+
+          bookingItem.onmouseenter = function () {
+            this.style.borderColor = "#3b82f6";
+            this.style.boxShadow = "0 2px 8px rgba(59, 130, 246, 0.1)";
+          };
+
+          bookingItem.onmouseleave = function () {
+            this.style.borderColor = "#e5e7eb";
+            this.style.boxShadow = "none";
+          };
+
+          bookingItem.onclick = () => {
+            closeViewAllModal();
+            openModal(booking);
+          };
+
+          // Create status badge with proper colors
+          let statusColor = "#6b7280"; // default gray
+          let bgColor = "#f3f4f6";
+
+          switch (bookingStatus) {
+            case "confirmed":
+              statusColor = "#10b981";
+              bgColor = "#d1fae5";
+              break;
+            case "pending":
+              statusColor = "#f59e0b";
+              bgColor = "#fef3c7";
+              break;
+            case "cancelled":
+              statusColor = "#ef4444";
+              bgColor = "#fee2e2";
+              break;
+            case "completed":
+              statusColor = "#3b82f6";
+              bgColor = "#dbeafe";
+              break;
+          }
+
+          bookingItem.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                <div style="flex: 1;">
+                    <h4 style="margin: 0 0 8px 0; font-size: 1.1rem; color: #111827;">
+                        ${customerName}
+                        ${
+                          booking.phone
+                            ? `<span style="font-size: 0.9rem; color: #6b7280; margin-left: 8px;">${booking.phone}</span>`
+                            : ""
+                        }
+                    </h4>
+                    <div style="display: flex; gap: 16px; font-size: 0.9rem; color: #6b7280; margin-bottom: 8px;">
+                        <span style="display: flex; align-items: center; gap: 4px;">
+                            <i class="far fa-calendar"></i> ${formattedDate}
+                        </span>
+                        <span style="display: flex; align-items: center; gap: 4px;">
+                            <i class="far fa-clock"></i> ${formatTime(
+                              bookingTime
+                            )}
+                        </span>
+                        <span style="display: flex; align-items: center; gap: 4px;">
+                            <i class="fas fa-cut"></i> ${serviceName}
+                        </span>
+                        <span style="display: flex; align-items: center; gap: 4px;">
+                            <i class="far fa-clock"></i> ${
+                              booking.duration || 30
+                            } min
+                        </span>
+                    </div>
+                    ${
+                      bookingNotes
+                        ? `
+                    <div style="font-size: 0.9rem; color: #6b7280; padding: 8px; background: #f9fafb; border-radius: 4px; margin-top: 8px;">
+                        <i class="fas fa-sticky-note"></i> ${bookingNotes}
+                    </div>
+                    `
+                        : ""
+                    }
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end; margin-left: 16px;">
+                    <span style="padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; 
+                           color: ${statusColor}; background: ${bgColor};">
+                        ${
+                          bookingStatus.charAt(0).toUpperCase() +
+                          bookingStatus.slice(1)
+                        }
+                    </span>
+                    <span style="font-weight: 700; color: #111827; font-size: 1.2rem;">
+                        ₦${bookingPrice}
+                    </span>
+                    <div style="font-size: 0.8rem; color: #9ca3af;">
+                        ID: ${booking.id || "N/A"}
+                    </div>
+                </div>
+            </div>
+        `;
+
+          container.appendChild(bookingItem);
+        });
+      }
+
+      function filterBookingsView() {
+        const filter = document.getElementById("bookingFilter").value;
+        loadAllBookingsView(filter);
+      }
+
+      function exportBookings() {
+        // Simple export to JSON
+        const dataStr = JSON.stringify(bookings, null, 2);
+        const dataUri =
+          "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+
+        const exportFileDefaultName = `bookings_${
+          new Date().toISOString().split("T")[0]
+        }.json`;
+
+        const linkElement = document.createElement("a");
+        linkElement.setAttribute("href", dataUri);
+        linkElement.setAttribute("download", exportFileDefaultName);
+        linkElement.click();
+
+        showToast("Bookings exported successfully", "success");
+      }
+
+      // ===== MANAGE AVAILABILITY FUNCTIONS =====
+      function manageAvailabilityModal() {
+        const modal = document.getElementById("manageAvailabilityModal");
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        const availability = onboardingData.availability || {};
+
+        // Load current business hours
+        if (availability.startTime) {
+          document.getElementById("availabilityStartTime").value =
+            availability.startTime;
+        }
+        if (availability.endTime) {
+          document.getElementById("availabilityEndTime").value =
+            availability.endTime;
+        }
+
+        // Load availability list
+        loadAvailabilityList();
+
+        modal.style.display = "flex";
+      }
+
+      function closeManageAvailabilityModal() {
+        document.getElementById("manageAvailabilityModal").style.display =
+          "none";
+      }
+
+      function updateBusinessHours() {
+        const startTime = document.getElementById(
+          "availabilityStartTime"
+        ).value;
+        const endTime = document.getElementById("availabilityEndTime").value;
+
+        if (!startTime || !endTime) {
+          showToast("Please set both start and end times", "error");
+          return;
+        }
+
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        if (!onboardingData.availability) {
+          onboardingData.availability = {};
+        }
+
+        onboardingData.availability.startTime = startTime;
+        onboardingData.availability.endTime = endTime;
+
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+
+        // Update display
+        document.getElementById("businessHours").textContent = `${formatTime(
+          startTime
+        )} - ${formatTime(endTime)}`;
+        document.getElementById(
+          "businessHoursDetail"
+        ).textContent = `${formatTime(startTime)} - ${formatTime(endTime)}`;
+
+        showToast("Business hours updated successfully", "success");
+      }
+
+      function loadAvailabilityList() {
+        const container = document.getElementById("availabilityList");
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        const availability = onboardingData.availability || {};
+        const availableDays = availability.days || [];
+
+        container.innerHTML = "";
+
+        if (availableDays.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: #6b7280;">
+                <i class="far fa-calendar-times"></i>
+                <p>No available days set</p>
+            </div>
+        `;
+          return;
+        }
+
+        // Group by month
+        const groupedByMonth = {};
+        availableDays.forEach((dateStr) => {
+          const date = new Date(dateStr);
+          const monthYear = date.toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          });
+
+          if (!groupedByMonth[monthYear]) {
+            groupedByMonth[monthYear] = [];
+          }
+          groupedByMonth[monthYear].push(dateStr);
+        });
+
+        // Sort months chronologically
+        const sortedMonths = Object.keys(groupedByMonth).sort((a, b) => {
+          return new Date(a) - new Date(b);
+        });
+
+        sortedMonths.forEach((monthYear) => {
+          const monthSection = document.createElement("div");
+          monthSection.style.marginBottom = "16px";
+
+          const monthHeader = document.createElement("h5");
+          monthHeader.style.margin = "0 0 8px 0";
+          monthHeader.style.fontSize = "0.9rem";
+          monthHeader.style.color = "#4b5563";
+          monthHeader.textContent = monthYear;
+
+          const daysList = document.createElement("div");
+          daysList.style.display = "flex";
+          daysList.style.flexWrap = "wrap";
+          daysList.style.gap = "6px";
+
+          groupedByMonth[monthYear].forEach((dateStr) => {
+            const date = new Date(dateStr);
+            const dayElement = document.createElement("span");
+            dayElement.style.padding = "4px 8px";
+            dayElement.style.background = "#000";
+            dayElement.style.color = "#fff";
+            dayElement.style.borderRadius = "4px";
+            dayElement.style.fontSize = "0.8rem";
+            dayElement.style.cursor = "pointer";
+            dayElement.title = "Click to remove";
+            dayElement.textContent = date.getDate();
+
+            dayElement.onclick = () => {
+              removeAvailableDay(dateStr);
+            };
+
+            daysList.appendChild(dayElement);
+          });
+
+          monthSection.appendChild(monthHeader);
+          monthSection.appendChild(daysList);
+          container.appendChild(monthSection);
+        });
+      }
+
+      function removeAvailableDay(dateStr) {
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        const availability = onboardingData.availability || {};
+        const availableDays = availability.days || [];
+
+        const index = availableDays.indexOf(dateStr);
+        if (index > -1) {
+          availableDays.splice(index, 1);
+          onboardingData.availability.days = availableDays;
+          localStorage.setItem(
+            "onboardingData",
+            JSON.stringify(onboardingData)
+          );
+
+          showToast(`Removed ${formatDate(dateStr)} from availability`, "info");
+          loadAvailabilityList();
+          loadMiniCalendar();
+          updateAvailabilityCount();
+        }
+      }
+
+      // ===== QUICK SELECTION FUNCTIONS =====
+      function selectAllWeekdays() {
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        if (!onboardingData.availability) {
+          onboardingData.availability = {};
+        }
+
+        const availableDays = onboardingData.availability.days || [];
+        const today = new Date();
+
+        // Add next 30 weekdays (Monday-Friday)
+        for (let i = 0; i < 30; i++) {
+          const date = new Date(today);
+          date.setDate(date.getDate() + i);
+          const dayOfWeek = date.getDay();
+
+          // 1-5 = Monday-Friday (0 = Sunday, 6 = Saturday)
+          if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+            const dateStr = date.toISOString().split("T")[0];
+            if (!availableDays.includes(dateStr)) {
+              availableDays.push(dateStr);
+            }
+          }
+        }
+
+        // Sort and save
+        availableDays.sort();
+        onboardingData.availability.days = availableDays;
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+
+        showToast("Added all weekdays for next 30 days", "success");
+        loadAvailabilityList();
+        loadMiniCalendar();
+        updateAvailabilityCount();
+      }
+
+      function selectWeekends() {
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        if (!onboardingData.availability) {
+          onboardingData.availability = {};
+        }
+
+        const availableDays = onboardingData.availability.days || [];
+        const today = new Date();
+
+        // Add next 8 weekends (Saturday-Sunday)
+        for (let i = 0; i < 56; i++) {
+          // 8 weeks
+          const date = new Date(today);
+          date.setDate(date.getDate() + i);
+          const dayOfWeek = date.getDay();
+
+          // 0 = Sunday, 6 = Saturday
+          if (dayOfWeek === 0 || dayOfWeek === 6) {
+            const dateStr = date.toISOString().split("T")[0];
+            if (!availableDays.includes(dateStr)) {
+              availableDays.push(dateStr);
+            }
+          }
+        }
+
+        // Sort and save
+        availableDays.sort();
+        onboardingData.availability.days = availableDays;
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+
+        showToast("Added weekends for next 8 weeks", "success");
+        loadAvailabilityList();
+        loadMiniCalendar();
+        updateAvailabilityCount();
+      }
+
+      function selectNext7Days() {
+        const onboardingData =
+          JSON.parse(localStorage.getItem("onboardingData")) || {};
+        if (!onboardingData.availability) {
+          onboardingData.availability = {};
+        }
+
+        const availableDays = onboardingData.availability.days || [];
+        const today = new Date();
+
+        // Add next 7 days
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(today);
+          date.setDate(date.getDate() + i);
+          const dateStr = date.toISOString().split("T")[0];
+
+          if (!availableDays.includes(dateStr)) {
+            availableDays.push(dateStr);
+          }
+        }
+
+        // Sort and save
+        availableDays.sort();
+        onboardingData.availability.days = availableDays;
+        localStorage.setItem("onboardingData", JSON.stringify(onboardingData));
+
+        showToast("Added next 7 days to availability", "success");
+        loadAvailabilityList();
+        loadMiniCalendar();
+        updateAvailabilityCount();
+      }
+
+      function syncWithOnboarding() {
+        showToast("Availability synced with onboarding settings", "info");
+        // Reload data from onboarding
+        loadOnboardingData();
+        loadMiniCalendar();
+        updateAvailabilityCount();
+      }
+
+      function fixBookingData() {
+        const allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
+        const fixedBookings = allBookings.map((booking, index) => {
+          // Ensure booking is an object
+          if (!booking || typeof booking !== "object") {
+            return {
+              id: Date.now() + index,
+              customer: "Unknown Customer",
+              service: "Haircut",
+              date: new Date().toISOString().split("T")[0],
+              time: "10:00",
+              duration: 30,
+              price: 5000,
+              status: "pending",
+              phone: "",
+              notes: "Auto-generated from fix",
+            };
+          }
+
+          // Ensure all required fields exist
+          return {
+            id: booking.id || Date.now() + index,
+            customer: booking.customer || booking.name || "Unknown Customer",
+            service: booking.service || booking.serviceType || "Haircut",
+            date: booking.date || new Date().toISOString().split("T")[0],
+            time: booking.time || "10:00",
+            duration: booking.duration || 30,
+            price: booking.price || 5000,
+            status: booking.status || "pending",
+            phone: booking.phone || "",
+            notes: booking.notes || "",
+          };
+        });
+
+        localStorage.setItem("bookings", JSON.stringify(fixedBookings));
+        bookings = fixedBookings;
+
+        console.log("Fixed booking data:", fixedBookings);
+        showToast("Booking data structure fixed", "info");
+      }
+
       // Initialize everything
       function initDashboard() {
+        // Fix booking data first
+        fixBookingData();
+
+        // Sync onboarding availability first
+        syncOnboardingAvailability();
+        // Migrate old date formats
+        migrateOnboardingDates();
+
         // Load data
         loadBookings();
         loadOnboardingData();
@@ -2494,12 +3702,16 @@
         });
 
         // Modal close on outside click
+        // Modal close on outside click
         window.onclick = function (event) {
           const modals = [
             "bookingModal",
             "addBookingModal",
             "editProfileModal",
             "manageServicesModal",
+            "blockTimeModal",
+            "viewAllBookingsModal",
+            "manageAvailabilityModal",
           ];
           modals.forEach((modalId) => {
             const modal = document.getElementById(modalId);
@@ -2559,6 +3771,37 @@
         // Check for updates every 30 seconds
         setInterval(updateMessageBadge, 30000);
       });
+
+      // Start everything when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        // First, check onboarding status
+        checkOnboardingStatus();
+
+        // Then initialize dashboard
+        initDashboard();
+      });
+
+      function checkOnboardingStatus() {
+        const onboardingComplete = localStorage.getItem("onboardingComplete");
+        const hasOnboardingData = localStorage.getItem("onboardingData");
+
+        console.log("Onboarding check:", {
+          complete: onboardingComplete,
+          hasData: !!hasOnboardingData,
+        });
+
+        // Redirect to onboarding if not complete AND no data
+        if (onboardingComplete !== "true") {
+          if (!hasOnboardingData) {
+            window.location.href = "onboarding_barber.html";
+            return false;
+          } else {
+            // If data exists but flag isn't set, set it now
+            localStorage.setItem("onboardingComplete", "true");
+          }
+        }
+        return true;
+      }
     </script>
   </body>
 </html>
