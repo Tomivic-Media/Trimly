@@ -11,6 +11,16 @@
     />
   </head>
   <body>
+    <script>
+      // PREVENT ACCESS IF ONBOARDING IS ALREADY COMPLETE
+      const isOnboardingComplete = localStorage.getItem("onboardingComplete");
+      const hasOnboardingData = localStorage.getItem("onboardingData");
+
+      // If onboarding is marked as complete AND there's valid data, redirect to dashboard
+      if (isOnboardingComplete === "true" && hasOnboardingData) {
+        window.location.href = "dashboard_barber.html";
+      }
+    </script>
     <div class="container">
       <h2>Set up your barber profile</h2>
 
@@ -334,7 +344,11 @@
         calendar.innerHTML = "";
 
         for (let day = 1; day <= daysInMonth; day++) {
-          const dateKey = `${year}-${month + 1}-${day}`;
+          // FIX: Use YYYY-MM-DD format with leading zeros
+          const dateKey = `${year}-${String(month + 1).padStart(
+            2,
+            "0"
+          )}-${String(day).padStart(2, "0")}`;
           const div = document.createElement("div");
 
           div.textContent = day;
@@ -419,8 +433,28 @@
 
       /************ FINISH ************/
       function finishOnboarding() {
+        if (!validateStep(currentStep)) return;
+
         saveProgress();
+
+        // Mark as complete
         localStorage.setItem("onboardingComplete", "true");
+
+        // Add timestamp for when onboarding was completed
+        const completionData = {
+          completed: true,
+          completedAt: new Date().toISOString(),
+          version: "1.0",
+        };
+        localStorage.setItem(
+          "onboardingCompletionData",
+          JSON.stringify(completionData)
+        );
+
+        // Show success message before redirecting
+        alert("Onboarding complete! Your barber profile is now ready.");
+
+        // Redirect to dashboard
         window.location.href = "dashboard_barber.html";
       }
 
@@ -432,7 +466,33 @@
         addService();
       }
 
+      // Also need to convert existing dates if they're in old format
+      function migrateExistingDates() {
+        const saved = JSON.parse(localStorage.getItem("onboardingData"));
+        if (!saved || !saved.availability || !saved.availability.days) return;
+
+        const convertedDates = saved.availability.days.map((dateStr) => {
+          // If date is in "2024-1-8" format, convert to "2024-01-08"
+          const parts = dateStr.split("-");
+          if (parts.length === 3) {
+            const [year, month, day] = parts;
+            return `${year}-${String(month).padStart(2, "0")}-${String(
+              day
+            ).padStart(2, "0")}`;
+          }
+          return dateStr;
+        });
+
+        saved.availability.days = convertedDates;
+        localStorage.setItem("onboardingData", JSON.stringify(saved));
+
+        // Update selectedDates
+        selectedDates.clear();
+        convertedDates.forEach((d) => selectedDates.add(d));
+      }
+
       restoreProgress();
+      migrateExistingDates();
     </script>
   </body>
 </html>
