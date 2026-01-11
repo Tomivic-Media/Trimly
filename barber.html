@@ -16,6 +16,359 @@
       href="/STATIC/Images/icons/trimly logo.svg"
     />
     <title>Barber Profile</title>
+    <style>
+      .comment-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      
+      .comment-modal.open {
+        display: flex;
+      }
+      
+      .comment-box {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      
+      .comment-header h3 {
+        margin: 0;
+        font-size: 20px;
+        color: #1A1A1A;
+      }
+      
+      .close-comment {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+      
+      .rating-input {
+        margin: 20px 0;
+      }
+      
+      .rating-input label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+      }
+      
+      .star-rating {
+        display: flex;
+        gap: 8px;
+        direction: rtl;
+      }
+      
+      .star-rating input {
+        display: none;
+      }
+      
+      .star-rating label {
+        font-size: 30px;
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      
+      .star-rating label:hover,
+      .star-rating label:hover ~ label,
+      .star-rating input:checked ~ label {
+        color: #ffd700;
+      }
+      
+      .comment-input textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 14px;
+        resize: vertical;
+        min-height: 100px;
+        margin-top: 10px;
+      }
+      
+      .submit-comment-btn {
+        background: #00A859;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 20px;
+        transition: background 0.3s;
+      }
+      
+      .submit-comment-btn:hover {
+        background: #008F4C;
+      }
+      
+      .review-count {
+        color: #666;
+        font-size: 14px;
+      }
+      
+      .rating-breakdown {
+        margin-top: 20px;
+      }
+      
+      .bar-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      
+      .bar-row span {
+        width: 20px;
+        text-align: right;
+        color: #666;
+      }
+      
+      .bar {
+        flex: 1;
+        height: 8px;
+        background: #f0f0f0;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      
+      .bar div {
+        height: 100%;
+        background: #00A859;
+        border-radius: 4px;
+      }
+      
+      .summary-count {
+        color: #666;
+        margin-top: 5px;
+      }
+
+
+      /* Yellow Add Review Button */
+.add-comment-btn {
+  background: #FFD700 !important;
+  color: #333 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 12px 24px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: all 0.3s !important;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2) !important;
+}
+
+.add-comment-btn:hover {
+  background: #FFC400 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3) !important;
+}
+
+.add-comment-btn span {
+  font-size: 18px !important;
+  font-weight: bold !important;
+}
+
+/* Yellow Review Summary Header */
+.summary-rating h1 {
+  color: #FFD700 !important;
+  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.2) !important;
+}
+
+/* Yellow Submit Button */
+.submit-comment-btn {
+  background: #FFD700 !important;
+  color: #333 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 14px 24px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  margin-top: 20px !important;
+  transition: all 0.3s !important;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2) !important;
+}
+
+.submit-comment-btn:hover {
+  background: #FFC400 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3) !important;
+}
+
+/* Yellow Rating Breakdown Bars */
+.bar div {
+  background: #FFD700 !important;
+  box-shadow: 0 1px 4px rgba(255, 215, 0, 0.3) !important;
+}
+
+/* Yellow Stars in Star Rating */
+.star-rating label {
+  color: #ddd !important;
+  transition: color 0.2s !important;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+  color: #FFD700 !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+}
+
+/* Button positions - moved to bottom right */
+.reviews-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  position: relative !important;
+}
+
+.reviews-header > div:last-child {
+  display: flex !important;
+  gap: 12px !important;
+  align-items: center !important;
+}
+
+/* Modal header adjustments */
+.modal-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.modal-header-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* Review summary stars color */
+.summary-stars {
+  color: #FFD700 !important;
+  font-size: 20px !important;
+  margin: 10px 0 !important;
+}
+
+/* Position container for buttons at bottom right of reviews section */
+.reviews-section {
+  position: relative;
+  min-height: 400px; /* Adjust based on your layout */
+}
+
+.reviews-section .reviews-header > div:last-child {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+/* OR if you want it outside the header but still in the section */
+.add-review-bottom-right {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+/* Position add review button at bottom right of modal */
+.modal-header-right {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+/* For reviews section bottom right button */
+.reviews-section {
+  position: relative;
+  padding-bottom: 80px; /* Add space for the button */
+}
+
+.add-review-bottom-right {
+  position: absolute;
+  bottom: 10;
+  right: 10;
+  z-index: 10;
+}
+
+/* For modal bottom right button */
+.modal-inner {
+  position: relative;
+  min-height: 400px;
+}
+
+.modal-bottom-right {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1001;
+}
+
+
+/* For sticky bottom button in modal */
+.modal-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+}
+
+.modal-review-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 60vh;
+  margin-bottom: 20px;
+}
+
+.modal-bottom-container {
+  padding: 20px;
+  border-top: 1px solid #e5e5e5;
+  background: white;
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 10;
+}
+
+/* Adjust modal height */
+.reviews-modal .modal-inner {
+  max-height: 85vh;
+  overflow: hidden;
+}
+    </style>
   </head>
 
   <body>
@@ -93,7 +446,7 @@
             <input id="searchBar" class="search-input" placeholder="Search" />
           </div>
 
-            <div class="notificationwithprofile">
+          <div class="notificationwithprofile">
             <div class="notifications">
               <img
                 src="/STATIC/Images/icons/notificatiion.svg"
@@ -156,10 +509,8 @@
       const params = new URLSearchParams(window.location.search);
       const barberId = params.get("id");
 
-      
-
       /************************
-       * 2. BARBERS DATABASE
+       * 2. BARBERS DATABASE (UPDATED WITH NEW REVIEWS)
        ************************/
       const barbers = {
         1: {
@@ -167,15 +518,14 @@
           name: "Ariyo barbing services",
           img: "/STATIC/Images/e3e57f5dd5ab20b760d3f389da7910e955587728.jpg",
           location: "Lagos",
-          rating: 4.8,
           amount: 5000,
           desc: "Premium Lagos barbershop known for sharp fades, afro grooming, and clean modern cuts.",
           verified: true,
           priceTier: "mid",
           availability: [17, 24, 19, 29, 27, 5, 1, 22, 6, 10],
-
           reviews: [
             {
+              id: 1,
               name: "David Adepoju",
               avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 5,
@@ -183,6 +533,7 @@
               text: "Amazing service! My fade came out clean and sharp. Easily one of the best barbers in Lagos.",
             },
             {
+              id: 2,
               name: "Michael Femi",
               avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 4,
@@ -190,6 +541,7 @@
               text: "Good attention to detail. The shop was neat and he kept to time.",
             },
             {
+              id: 3,
               name: "Tunde Ilori",
               avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 5,
@@ -197,7 +549,6 @@
               text: "Best haircut I've had in months. Highly recommended.",
             },
           ],
-
           workingHours: [{ start: "07:00", end: "22:00" }],
         },
 
@@ -206,15 +557,14 @@
           name: "Fola barbing services",
           img: "/STATIC/Images/51dff4b5b6c4b24a89fc357e76ddb4bffa5f60cb.jpg",
           location: "Abuja",
-          rating: 3.0,
           amount: 2500,
           desc: "Affordable neighborhood barbershop offering simple, clean haircuts at great value.",
           verified: false,
           priceTier: "low",
           availability: [16, 1, 3, 23, 7, 22, 19, 26, 25, 11],
-
           reviews: [
             {
+              id: 1,
               name: "Chibuzo Kingsley",
               avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 3,
@@ -222,6 +572,7 @@
               text: "Decent cut. Could improve timing but overall fair.",
             },
             {
+              id: 2,
               name: "Aisha Bello",
               avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 4,
@@ -229,6 +580,7 @@
               text: "Pleasant service, friendly barber. Good pricing.",
             },
             {
+              id: 3,
               name: "Yusuf Ahmed",
               avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 2,
@@ -236,7 +588,6 @@
               text: "Cut was okay but not exactly what I asked for.",
             },
           ],
-
           workingHours: [{ start: "07:00", end: "22:00" }],
         },
 
@@ -245,7 +596,6 @@
           name: "Adebisi barbing services",
           img: "/STATIC/Images/fd5eaeb566eaee245f79cac02879dbca4d66fb74.jpg",
           location: "Ibadan",
-          rating: 4.2,
           amount: 4000,
           desc: "Professional Ibadan barber specializing in detailed fades, beard trims, and styling.",
           verified: true,
@@ -253,6 +603,7 @@
           availability: [16, 13, 20, 24, 6, 8, 21, 25, 17, 3],
           reviews: [
             {
+              id: 1,
               name: "Kunle Owolabi",
               avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 4,
@@ -260,6 +611,7 @@
               text: "Very professional. My beard trim came out sharp.",
             },
             {
+              id: 2,
               name: "Samuel Peters",
               avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 5,
@@ -267,6 +619,7 @@
               text: "Excellent work. Definitely coming back.",
             },
             {
+              id: 3,
               name: "Ireti A.",
               avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 4,
@@ -274,7 +627,6 @@
               text: "Neat shop and good vibes. Loved the haircut.",
             },
           ],
-
           workingHours: [{ start: "07:00", end: "22:00" }],
         },
 
@@ -283,15 +635,14 @@
           name: "African barbing services",
           img: "/STATIC/Images/71954b1bf5bf641a949aa7d9565112e807cd9a25.jpg",
           location: "Ibadan",
-          rating: 4.0,
           amount: 6500,
           desc: "Luxury grooming experience with premium tools, skilled barbers, and stylish ambience.",
           verified: false,
           priceTier: "high",
           availability: [10, 12, 14, 16, 4, 13, 22, 15, 9, 1],
-
           reviews: [
             {
+              id: 1,
               name: "Precious Daniel",
               avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 4,
@@ -299,6 +650,7 @@
               text: "Good service but a little pricey.",
             },
             {
+              id: 2,
               name: "Emeka U.",
               avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 5,
@@ -306,6 +658,7 @@
               text: "Great haircut, worth the money.",
             },
             {
+              id: 3,
               name: "Ola N.",
               avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 3,
@@ -321,15 +674,14 @@
           name: "Ayodele barbing services",
           img: "/STATIC/Images/89f0e267a3761a55a184609ef53967fc6beed6e6.jpg",
           location: "Abuja",
-          rating: 3.5,
           amount: 3000,
           desc: "Quick and reliable barber service ideal for regular maintenance cuts and trims.",
           verified: false,
           priceTier: "low",
           availability: [8, 21, 16, 7, 28, 30, 1, 6, 24, 13],
-
           reviews: [
             {
+              id: 1,
               name: "Henry Okafor",
               avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 4,
@@ -337,6 +689,7 @@
               text: "Affordable and clean cut. Good value.",
             },
             {
+              id: 2,
               name: "Sade Ojo",
               avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 3,
@@ -344,6 +697,7 @@
               text: "Okay haircut, nothing extraordinary.",
             },
             {
+              id: 3,
               name: "Daniel O.",
               avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 5,
@@ -359,15 +713,14 @@
           name: "Rise barbing services",
           img: "/STATIC/Images/7e4c3695e25ee081e122f0dac2c4f7c7b0c3ccce.jpg",
           location: "Lagos",
-          rating: 4.8,
           amount: 8000,
           desc: "High-end barbershop delivering premium fades, luxury grooming, and elite service.",
           verified: true,
           priceTier: "high",
           availability: [21, 13, 11, 28, 22, 10, 5, 2, 18, 7],
-
           reviews: [
             {
+              id: 1,
               name: "Favour Chinedu",
               avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 5,
@@ -375,6 +728,7 @@
               text: "Top-notch! The fade was perfect and the service was premium.",
             },
             {
+              id: 2,
               name: "Olawale Ade",
               avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 4,
@@ -382,6 +736,7 @@
               text: "Loved the experience, great ambience.",
             },
             {
+              id: 3,
               name: "Kelvin U.",
               avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 5,
@@ -389,12 +744,110 @@
               text: "Perfect haircut every time. Highly skilled barber.",
             },
           ],
-
           workingHours: [{ start: "07:00", end: "22:00" }],
         },
       };
+
+
+      // Function to get barber data with dynamic rating
+function getBarberWithDynamicRating(barberId) {
+  const barberData = JSON.parse(JSON.stringify(originalBarbers[barberId]));
+  
+  // Load saved reviews
+  const savedReviews = loadBarberReviews(barberId);
+  if (savedReviews) {
+    barberData.reviews = savedReviews;
+  }
+  
+  // Calculate dynamic rating
+  barberData.rating = calculateAverageRating(barberData.reviews);
+  
+  return barberData;
+}
+
+// Function to get all barbers with dynamic ratings
+function getAllBarbersWithRatings() {
+  const barbersWithRatings = {};
+  
+  Object.keys(originalBarbers).forEach(id => {
+    barbersWithRatings[id] = getBarberWithDynamicRating(id);
+  });
+  
+  return barbersWithRatings;
+}
+
+// Function to save updated barber data
+function saveBarberData(barberId, barberData) {
+  // Save reviews to localStorage
+  saveBarberReviews(barberId, barberData.reviews);
+  
+  // Also save the complete barber data for quick access on other pages
+  localStorage.setItem(`barber_${barberId}_data`, JSON.stringify({
+    ...barberData,
+    rating: barberData.rating
+  }));
+  
+  // Broadcast that barber data has changed
+  if (bc) bc.postMessage({ 
+    type: "barber_data_changed", 
+    barberId: barberId 
+  });
+}
+
+// Function to load barber data
+function loadBarberData(barberId) {
+  const savedData = localStorage.getItem(`barber_${barberId}_data`);
+  if (savedData) {
+    return JSON.parse(savedData);
+  }
+  return getBarberWithDynamicRating(barberId);
+}
+
+      // Function to calculate average rating dynamically
+      function calculateAverageRating(reviews) {
+        if (!reviews || reviews.length === 0) return 0;
+        const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+        return total / reviews.length;
+      }
+
+      // Function to get rating breakdown
+      function getRatingBreakdown(reviews) {
+        const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        reviews.forEach((review) => {
+          breakdown[review.rating]++;
+        });
+        return breakdown;
+      }
+
+      // Function to calculate percentage for each rating
+      function calculateRatingPercentages(reviews) {
+        const breakdown = getRatingBreakdown(reviews);
+        const total = reviews.length;
+        const percentages = {};
+        for (let i = 1; i <= 5; i++) {
+          percentages[i] = total > 0 ? (breakdown[i] / total) * 100 : 0;
+        }
+        return percentages;
+      }
+
+
+      // Function to save reviews to localStorage
+function saveBarberReviews(barberId, reviews) {
+  localStorage.setItem(`barber_${barberId}_reviews`, JSON.stringify(reviews));
+}
+
+// Function to load reviews from localStorage
+function loadBarberReviews(barberId) {
+  const savedReviews = localStorage.getItem(`barber_${barberId}_reviews`);
+  if (savedReviews) {
+    return JSON.parse(savedReviews);
+  }
+  return null;
+}
+
+
       /************************
-       * 3. RENDER BARBER
+       * 3. RENDER BARBER (UPDATED)
        ************************/
       function renderBarber() {
         const barber = barbers[barberId];
@@ -405,228 +858,407 @@
           return;
         }
 
-        // MAIN TEMPLATE (profile + preview reviews + modal)
+         // Load saved reviews from localStorage
+  const savedReviews = loadBarberReviews(barberId);
+  if (savedReviews) {
+    barber.reviews = savedReviews;
+  }
+
+        // Calculate dynamic values
+        const averageRating = calculateAverageRating(barber.reviews);
+        const ratingPercentages = calculateRatingPercentages(barber.reviews);
+        const ratingBreakdown = getRatingBreakdown(barber.reviews);
+
+        // MAIN TEMPLATE
         container.innerHTML = `
-                <!-- BACK -->
-                <div class="header-row">
-                  <button class="back-btn" onclick="window.location.href='home.html';">
-                    <img src="/STATIC/Images/icons/Frame 1000009185.png" alt="Back">
-                    <span class="page-title">Back to other barbers</span>
-                  </button>
-                </div>
+  <!-- BACK -->
+  <div class="header-row">
+    <button class="back-btn" onclick="window.location.href='home.html';">
+      <img src="/STATIC/Images/icons/Frame 1000009185.png" alt="Back">
+      <span class="page-title">Back to other barbers</span>
+    </button>
+  </div>
 
-                <div class="profile-layout">
+  <div class="profile-layout">
+    <div class="profile-left">
+      <div class="profile-gallery">
+        <div class="thumb-column">
+          <img src="${barber.img}" class="thumb" />
+          <img src="${barber.img}" class="thumb" />
+          <img src="${barber.img}" class="thumb" />
+          <img src="${barber.img}" class="thumb" />
+        </div>
+        <img class="main-img" src="${barber.img}" />
+      </div>
+      <button class="book-service-btn">Book Service</button>
+      <div class="barber-info-card">
+        <h2 class=barber-name><img src="/STATIC/Images/icons/barber-profile.png" alt="profile-barber">${barber.name}</h2>
+        <p class="location">
+          <img src="/STATIC/Images/icons/typcn_location.svg" style="width:14px;">
+          ${barber.location}
+        </p>
+        <p class="desc">${barber.desc}</p>
+      </div>
+    </div>
 
-                  <div class="profile-left">
+    <div class="profile-right">
+      <p id="calendar-header-text">Days Available</p>
+      <div class="calendar-card">
+        <h4 id="calendar-month"></h4>
+        <div class="calendar-grid" id="calendar-grid"></div>
+        <div class="legend">
+          <div><span class="dot available-dot"></span> Days Available</div>
+          <div><span class="dot unavailable-dot"></span> Days Unavailable</div>
+        </div>
+      </div>
 
-                    <div class="profile-gallery">
-                      <div class="thumb-column">
-                        <img src="${barber.img}" class="thumb" />
-                        <img src="${barber.img}" class="thumb" />
-                        <img src="${barber.img}" class="thumb" />
-                        <img src="${barber.img}" class="thumb" />
-                      </div>
+      <div class="quick-actions-card">
+        <p id="quick-action-text">Quick Actions</p>
+        <button id="message-barber-btn" class="action-btn">
+          <span class="left-content">
+            <img src="/STATIC/Images/icons/message.svg" /> Message Barber
+          </span>
+        </button>
+        <button id="fav-btn" class="action-btn">
+          <img id="fav-icon" src="/STATIC/Images/icons/mynaui_heart (1).png">
+          <span id="fav-text" class="left-content"> Add to Favourite</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-                      <img class="main-img" src="${barber.img}" />
-                    </div>
+  <!-- REVIEWS SECTION -->
+<section class="reviews-section reviews-full-width">
+  <div class="reviews-header">
+    <div>
+      <h3>Verified Customer Reviews</h3>
+    </div>
+    <div>
+      <button id="open-see-all" class="see-all-btn">See All <img src="/STATIC/Images/icons/iconamoon_arrow-right-2-duotone green.png" /></button>
+    </div>
+  </div>
 
-                    <button class="book-service-btn">Book Service</button>
+  <div class="reviews-content">
+    <aside class="reviews-summary-card">
+      <div class="summary-rating">
+        <h1>${averageRating.toFixed(1)}<span>/5</span></h1>
+        <div class="summary-stars">${generateStars(averageRating)}</div>
+        <p class="summary-count">${barber.reviews.length} Verified ratings</p>
+      </div>
+      <div class="rating-breakdown">
+        ${[5, 4, 3, 2, 1].map(rating => `
+          <div class="bar-row">
+            <span>${rating}</span>
+            <div class="bar">
+              <div style="width:${ratingPercentages[rating]}%"></div>
+            </div>
+            <span class="review-count">(${ratingBreakdown[rating]})</span>
+          </div>
+        `).join('')}
+      </div>
+    </aside>
 
-                    <div class="barber-info-card">
-                      <h2 class=barber-name><img src="/STATIC/Images/icons/barber-profile.png" alt="profile-barber">${barber.name}</h2>
-                      <p class="location">
-                        <img src="/STATIC/Images/icons/typcn_location.svg" style="width:14px;">
-                        ${barber.location}
-                      </p>
-                      <p class="desc">${barber.desc}</p>
-                    </div>
+    <div class="preview-and-more">
+      <div id="preview-review-list" class="review-list"></div>
+      <button id="open-see-more" class="see-more-link">See More Reviews</button>
+    </div>
+  </div>
+  
+  <!-- Add review button at bottom right -->
+  <div class="add-review-bottom-right">
+    <button id="add-comment-btn" class="add-comment-btn">
+      <span>+</span> Add Review
+    </button>
+  </div>
+</section>
 
-                  </div> <!-- profile-left -->
+  <!-- REVIEWS MODAL -->
+<div id="reviewsModal" class="reviews-modal" aria-hidden="true" role="dialog" aria-label="Reviews modal">
+  <div class="modal-overlay" id="modalOverlay"></div>
+  <div class="modal-inner" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 class=barber-name><img src="/STATIC/Images/icons/barber-profile.png" alt="profile-barber">${barber.name}</h2>
+        <p class="kicker">Ratings & Reviews</p>
+      </div>
+      <button id="modalClose" class="modal-close" aria-label="Close modal">&times;</button>
+    </header>
 
-                  <div class="profile-right">
-                    <p id="calendar-header-text">Days Available</p>
-                    <div class="calendar-card">
-                      <h4 id="calendar-month"></h4>
-                      <div class="calendar-grid" id="calendar-grid"></div>
-                      <div class="legend">
-                        <div><span class="dot available-dot"></span> Days Available</div>
-                        <div><span class="dot unavailable-dot"></span> Days Unavailable</div>
-                      </div>
-                    </div>
+    <div class="modal-controls">
+      <button class="filter-btn">Star Ratings ▾</button>
+      <button class="filter-btn">Most Relevant ▾</button>
+    </div>
 
-                    <div class="quick-actions-card">
-                      <p id="quick-action-text">Quick Actions</p>
-                   <button id="message-barber-btn" class="action-btn">
-  <span class="left-content">
-    <img src="/STATIC/Images/icons/message.svg" /> Message Barber
-  </span>
-</button>
-
-                     <button id="fav-btn" class="action-btn">
-       <img id="fav-icon" src="/STATIC/Images/icons/mynaui_heart (1).png">
-        <span id="fav-text"  class="left-content"> Add to Favourite</span>
+    <div id="modal-review-list" class="modal-review-list"></div>
+    
+    <!-- Add review button at bottom of modal (inside content) -->
+    <div class="modal-bottom-container">
+      <button id="add-review-in-modal" class="add-comment-btn">
+        <span>+</span> Add Review
       </button>
+    </div>
+  </div>
+</div>
 
-                    </div>
-                  </div> <!-- profile-right -->
+  <!-- COMMENT MODAL -->
+  <div id="commentModal" class="comment-modal">
+    <div class="comment-box">
+      <header class="comment-header">
+        <h3>Add Your Review</h3>
+        <button class="close-comment">&times;</button>
+      </header>
+      
+      <div class="rating-input">
+        <label>Your Rating</label>
+        <div class="star-rating">
+          <input type="radio" id="star5" name="rating" value="5" />
+          <label for="star5">★</label>
+          <input type="radio" id="star4" name="rating" value="4" />
+          <label for="star4">★</label>
+          <input type="radio" id="star3" name="rating" value="3" />
+          <label for="star3">★</label>
+          <input type="radio" id="star2" name="rating" value="2" />
+          <label for="star2">★</label>
+          <input type="radio" id="star1" name="rating" value="1" />
+          <label for="star1">★</label>
+        </div>
+      </div>
+      
+      <div class="comment-input">
+        <label>Your Review</label>
+        <textarea id="reviewText" placeholder="Share your experience with this barber..."></textarea>
+      </div>
+      
+      <button id="submitReview" class="submit-comment-btn">Submit Review</button>
+    </div>
+  </div>
+`;
 
-                </div> <!-- profile-layout -->
+        // Helper function to generate star HTML
+      function generateStars(rating) {
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+  
+  // Using colored stars
+  let stars = '';
+  for (let i = 0; i < fullStars; i++) {
+    stars += '<span style="color: #FFD700;">★</span>';
+  }
+  if (halfStar) {
+    stars += '<span style="color: #FFD700;">½</span>';
+  }
+  for (let i = 0; i < emptyStars; i++) {
+    stars += '<span style="color: #ddd;">☆</span>';
+  }
+  
+  return stars;
+}
 
-                <!-- REVIEWS: full-width preview area -->
-                <section class="reviews-section reviews-full-width">
-                  <div class="reviews-header">
-                    <div>
-                      <h3>Verified Customer Reviews</h3>
-                    </div>
-                    <div>
-                      <button id="open-see-all" class="see-all-btn">See All <img src="/STATIC/Images/icons/iconamoon_arrow-right-2-duotone green.png" /></button>
-                    </div>
-                  </div>
-
-
-                  <div class="reviews-content">
-                    <aside class="reviews-summary-card">
-                      <div class="summary-rating">
-                        <h1>4.6<span>/5</span></h1>
-                        <div class="summary-stars">⭐⭐⭐⭐⭐</div>
-                        <p class="summary-count">${barber.reviews.length} Verified ratings</p>
-                      </div>
-                      <div class="rating-breakdown">
-                        <div class="bar-row"><span>5</span><div class="bar"><div style="width:80%"></div></div></div>
-                        <div class="bar-row"><span>4</span><div class="bar"><div style="width:65%"></div></div></div>
-                        <div class="bar-row"><span>3</span><div class="bar"><div style="width:25%"></div></div></div>
-                        <div class="bar-row"><span>2</span><div class="bar"><div style="width:10%"></div></div></div>
-                        <div class="bar-row"><span>1</span><div class="bar"><div style="width:5%"></div></div></div>
-                      </div>
-                    </aside>
-
-                    <div class="preview-and-more">
-                      <div id="preview-review-list" class="review-list"></div>
-                      <button id="open-see-more" class="see-more-link">See More Reviews</button>
-                    </div>
-                  </div>
-
-
-                </section>
-
-                <!-- MODAL (hidden by default) -->
-                <div id="reviewsModal" class="reviews-modal" aria-hidden="true" role="dialog" aria-label="Reviews modal">
-                  <div class="modal-overlay" id="modalOverlay"></div>
-                  <div class="modal-inner" role="document">
-                    <header class="modal-header">
-                      <div>
-                      <h2 class=barber-name><img src="/STATIC/Images/icons/barber-profile.png" alt="profile-barber">${barber.name}</h2>
-                        <p class="kicker">Ratings & Reviews</p>
-                      </div>
-                      <button id="modalClose" class="modal-close" aria-label="Close modal">&times;</button>
-                    </header>
-
-                    <div class="modal-controls">
-                      <button class="filter-btn">Start Ratings ▾</button>
-                      <button class="filter-btn">Most Relevant ▾</button>
-                    </div>
-
-                    <div id="modal-review-list" class="modal-review-list"></div>
-                  </div>
-                </div>
-              `;
-
-        // helper to render a review block
+        // Helper to render a review block
         function reviewHTML(r) {
-          const stars =
-            "★".repeat(r.rating) + "☆".repeat(Math.max(0, 5 - r.rating));
-          return `
-                  <article class="review-item">
-                    <img src="${r.avatar}" class="review-avatar" alt="${r.name}">
-                    <div class="review-content">
-                      <div class="review-header">
-                        <h4>${r.name}</h4>
-                      </div>
-                      <div class="review-stars">${stars} <span class="date">${r.date}</span></div>
-                      <p class="review-text">${r.text}</p>
-                    </div>
-                  </article>
-                `;
-        }
+  const stars = Array.from({length: 5}, (_, i) => 
+    i < r.rating ? 
+    '<span style="color: #FFD700;">★</span>' : 
+    '<span style="color: #ddd;">☆</span>'
+  ).join('');
+  
+  return `
+    <article class="review-item">
+      <img src="${r.avatar}" class="review-avatar" alt="${r.name}">
+      <div class="review-content">
+        <div class="review-header">
+          <h4>${r.name}</h4>
+          <div class="review-stars">${stars}</div>
+        </div>
+        <span class="date">${r.date}</span>
+        <p class="review-text">${r.text}</p>
+      </div>
+    </article>
+  `;
+}
 
-        // populate preview (first 3 reviews)
+        // Populate preview reviews
         const previewEl = document.getElementById("preview-review-list");
         previewEl.innerHTML = barber.reviews
           .slice(0, 3)
-          .map((r) => reviewHTML(r))
+          .map(r => reviewHTML(r))
           .join("");
 
-        // populate modal with all reviews
+        // Populate modal with all reviews
         const modalList = document.getElementById("modal-review-list");
-        modalList.innerHTML = barber.reviews.map((r) => reviewHTML(r)).join("");
+        modalList.innerHTML = barber.reviews.map(r => reviewHTML(r)).join("");
 
-        // calendar: simple injection (keeps your existing logic)
+        // Initialize calendar
+        initializeCalendar(barber);
+
+        // Initialize event listeners
+        initializeEventListeners(barber);
+
+        // Initialize favourite button
+        initializeFavouriteButton(barber);
+
+        // Initialize message button
+        initializeMessageButton(barber);
+      }
+
+      // Calendar initialization
+      function initializeCalendar(barber) {
         const monthNames = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
         ];
         const today = new Date();
         const year = today.getFullYear();
         const month = today.getMonth();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        document.getElementById(
-          "calendar-month"
-        ).textContent = `${monthNames[month]} ${year}`;
+        
+        document.getElementById("calendar-month").textContent = `${monthNames[month]} ${year}`;
+        
         const calendarGrid = document.getElementById("calendar-grid");
         const availableDays = barber.availability || [];
 
         calendarGrid.innerHTML = Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
           const isAvailable = availableDays.includes(day);
-
           return `
-      <div class="cal-day ${isAvailable ? "available" : "unavailable"}">
-        ${day}
-      </div>
-    `;
+            <div class="cal-day ${isAvailable ? "available" : "unavailable"}">
+              ${day}
+            </div>
+          `;
         }).join("");
+      }
 
-        // modal open/close
+      // Event listeners initialization
+      function initializeEventListeners(barber) {
+        // Modal open/close
         const modal = document.getElementById("reviewsModal");
         const modalOverlay = document.getElementById("modalOverlay");
         const openSeeAll = document.getElementById("open-see-all");
         const openSeeMore = document.getElementById("open-see-more");
         const closeBtn = document.getElementById("modalClose");
+        const addCommentBtn = document.getElementById("add-comment-btn");
+        const addReviewInModal = document.getElementById("add-review-in-modal");
+        const commentModal = document.getElementById("commentModal");
+        const closeCommentBtn = document.querySelector(".close-comment");
+        const submitReviewBtn = document.getElementById("submitReview");
 
         function showModal() {
           modal.setAttribute("aria-hidden", "false");
           modal.classList.add("open");
-          // focus trap simple: focus close button
           closeBtn.focus();
-          document.body.style.overflow = "hidden"; // prevent background scroll
+          document.body.style.overflow = "hidden";
         }
+
         function hideModal() {
           modal.setAttribute("aria-hidden", "true");
           modal.classList.remove("open");
-          document.body.style.overflow = ""; // restore scroll
+          document.body.style.overflow = "";
         }
 
+        function showCommentModal() {
+          commentModal.classList.add("open");
+          document.body.style.overflow = "hidden";
+        }
+
+        function hideCommentModal() {
+          commentModal.classList.remove("open");
+          document.body.style.overflow = "";
+        }
+
+        // Add review function
+function addReview(rating, text) {
+  const barber = barbers[barberId];
+  const newReview = {
+    id: Date.now(),
+    name: "You",
+    avatar: "/STATIC/Images/icons/Frame review.png",
+    rating: parseInt(rating),
+    date: new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    }),
+    text: text
+  };
+
+  // Add to barber's reviews
+  barber.reviews.unshift(newReview);
+  
+  // Calculate and update rating
+  const newAverageRating = calculateAverageRating(barber.reviews);
+  barber.rating = newAverageRating; // Add this line
+  
+  // Save updated reviews AND rating
+  localStorage.setItem(`barber_${barberId}_reviews`, JSON.stringify(barber.reviews));
+  localStorage.setItem(`barber_${barberId}_rating`, newAverageRating.toString());
+  
+  // Save to all barbers data
+  const allBarbersData = JSON.parse(localStorage.getItem('all_barbers_data')) || {};
+  allBarbersData[barberId] = {
+    reviews: barber.reviews,
+    rating: newAverageRating,
+    lastUpdated: new Date().toISOString()
+  };
+  localStorage.setItem('all_barbers_data', JSON.stringify(allBarbersData));
+
+  // Re-render the page
+  renderBarber();
+  
+  // Show success message
+  showToast("Thank you for your review!");
+}
+        // Event listeners
         openSeeAll && openSeeAll.addEventListener("click", showModal);
         openSeeMore && openSeeMore.addEventListener("click", showModal);
         closeBtn.addEventListener("click", hideModal);
         modalOverlay.addEventListener("click", hideModal);
-        window.addEventListener("keydown", (e) => {
-          if (e.key === "Escape") hideModal();
+
+        addCommentBtn && addCommentBtn.addEventListener("click", showCommentModal);
+        addReviewInModal && addReviewInModal.addEventListener("click", showCommentModal);
+        closeCommentBtn && closeCommentBtn.addEventListener("click", hideCommentModal);
+
+      submitReviewBtn && submitReviewBtn.addEventListener("click", () => {
+  const rating = document.querySelector('input[name="rating"]:checked');
+  const text = document.getElementById("reviewText").value.trim();
+
+  if (!rating) {
+    alert("Please select a rating");
+    return;
+  }
+
+  if (!text) {
+    alert("Please write a review");
+    return;
+  }
+
+  // Save review with persistence
+  addReview(rating.value, text);
+  hideCommentModal();
+  
+  // Clear the form
+  document.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
+  document.getElementById("reviewText").value = "";
+});
+
+        // Close comment modal on overlay click
+        commentModal.addEventListener("click", (e) => {
+          if (e.target === commentModal) {
+            hideCommentModal();
+          }
         });
 
-        /************************
-         * 4. FAVOURITE TOGGLE
-         ************************/
+        // Escape key to close modals
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            hideModal();
+            hideCommentModal();
+          }
+        });
+      }
+
+      // Favourite button initialization
+      function initializeFavouriteButton(barber) {
         const favBtn = document.getElementById("fav-btn");
         const favText = document.getElementById("fav-text");
         const favIcon = document.getElementById("fav-icon");
@@ -650,35 +1282,60 @@
           toggleFavourite(barber.id, barber.name);
           updateFavUI();
         });
-
-        const messageBtn = document.getElementById("message-barber-btn");
-
-        messageBtn.onclick = () => {
-  // Save selected barber for message page
-    localStorage.setItem("activeChatBarberId", barber.id);
-
-  // Redirect with query param
-  window.location.href = `message.html?barberId=${barber.id}`;
-};
-
       }
 
+      // Message button initialization
+      function initializeMessageButton(barber) {
+        const messageBtn = document.getElementById("message-barber-btn");
+        messageBtn.onclick = () => {
+          localStorage.setItem("activeChatBarberId", barber.id);
+          window.location.href = `message.html?barberId=${barber.id}`;
+        };
+      }
+
+      // Toast notification
+      function showToast(text) {
+        // Create toast if it doesn't exist
+        let toast = document.getElementById("toast");
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.id = "toast";
+          toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00A859;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1000;
+            display: none;
+            font-family: 'Geist', sans-serif;
+          `;
+          document.body.appendChild(toast);
+        }
+
+        toast.textContent = text;
+        toast.style.display = 'block';
+        toast.classList.add("show");
+
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => {
+            toast.style.display = 'none';
+          }, 300);
+        }, 2000);
+      }
+
+      // Initialize the page
       renderBarber();
 
       /* ----------------------------
-         SIDEBAR: toggle & overlay logic
+         SIDEBAR TOGGLE LOGIC
          ---------------------------- */
       const sidebar = document.getElementById("sidebar");
       const hamburgerBtn = document.getElementById("hamburger-btn");
       const overlay = document.getElementById("mobile-overlay");
-      // multiple toggle icons might exist
-      function getSidebarToggleElements() {
-        const arr = Array.from(
-          document.querySelectorAll(".sidebar-toggle-icon")
-        );
-        // also include hamburger icon if it should toggle collapsed state on desktop
-        return arr;
-      }
 
       function toggleSidebar() {
         const isMobile = window.innerWidth <= 1024;
@@ -696,10 +1353,11 @@
         }
       }
 
-      // Attach toggle listeners
-      getSidebarToggleElements().forEach((el) =>
+      // Attach sidebar toggle listeners
+      document.querySelectorAll(".sidebar-toggle-icon").forEach(el =>
         el.addEventListener("click", toggleSidebar)
       );
+      
       hamburgerBtn.addEventListener("click", () => {
         hamburgerBtn.classList.toggle("active");
         toggleSidebar();
@@ -719,37 +1377,7 @@
         }
       });
 
-      // Sync when favourites change elsewhere
-      window.addEventListener("storage", (e) => {
-        if (e.key === "favourites" || e.key === "favourites_updated") {
-          renderBarber();
-        }
-      });
-
-      if (bc) {
-        bc.addEventListener("message", (e) => {
-          if (e?.data?.type === "favourites_changed") {
-            renderBarber();
-          }
-        });
-      }
-
-   /*  function showToast(text) {
-        const toast = document.getElementById("toast");
-        if (!toast) return;
-
-        toast.textContent = text;
-        toast.classList.add("show");
-
-        setTimeout(() => {
-          toast.classList.remove("show");
-        }, 2000);
-      } */
-
-      function getFavourites() {
-        return JSON.parse(localStorage.getItem("favourites")) || [];
-      }
-
+      // Favourite functions
       function toggleFavourite(id, name = "Barber") {
         let favs = getFavourites();
         id = String(id);
@@ -765,602 +1393,19 @@
         localStorage.setItem("favourites", JSON.stringify(favs));
       }
 
-// Update the event listener for opening booking modal
-// Update the event listener for opening booking modal
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("book-service-btn")) {
-    const modal = document.getElementById("bookingModal");
-    modal.classList.add("open");
-
-    // Reset form when opening modal
-    resetBookingForm();
-    
-    // Set minimum date to today
-    const dateInput = document.getElementById("bookingDate");
-    const today = new Date().toISOString().split("T")[0];
-    dateInput.value = today;
-    dateInput.min = today;
-
-    // Generate time slots for today (initial load)
-    generateTimeSlotsForDate(today);
-    
-    // Setup event listeners for clearing errors
-    setupModalEventListeners();
-  }
-});
-
-
-// Helper function to generate time slots with validation
-function generateTimeSlotsWithValidation() {
-  const dateInput = document.getElementById("bookingDate");
-  const selectedDate = dateInput.value;
-  const today = new Date().toISOString().split("T")[0];
-  
-  // Get barber working hours (default to 7:00 AM - 10:00 PM)
-  const barber = barbers[barberId];
-  const workingHours = barber?.workingHours?.[0] || { start: "07:00", end: "22:00" };
-  
-  generateTimeSlots(workingHours.start, workingHours.end, 45);
-}
-
-      // Amount Calculation Logic
-     // Update the validation logic to clear errors when valid selection is made
-document.addEventListener("change", (e) => {
-  if (e.target.id === "personsSelect") {
-    const persons = Number(e.target.value);
-    const barber = barbers[barberId];
-
-    if (!barber || !persons) return;
-
-    const total = persons * barber.amount;
-
-    document.getElementById(
-      "totalAmount"
-    ).textContent = `₦${total.toLocaleString()}`;
-    
-    // Clear error if value is selected
-    if (persons) {
-      e.target.classList.remove("invalid");
-      document.getElementById("personsError").textContent = "";
-    }
-  }
-});
-
-      // Disable past dates automatically
-      const dateInput = document.getElementById("bookingDate");
-
-      if (dateInput) {
-        const today = new Date().toISOString().split("T")[0];
-        dateInput.min = today;
-      }
-
-   document.addEventListener("click", (e) => {
-  if (e.target.id !== "proceedPayment") return;
-
-  const barber = barbers[barberId];
-
-  const persons = document.getElementById("personsSelect");
-  const date = document.getElementById("bookingDate");
-  const time = document.getElementById("bookingTime");
-
-  const personsErr = document.getElementById("personsError");
-  const dateErr = document.getElementById("dateError");
-  const timeErr = document.getElementById("timeError");
-
-  // Reset errors
-  [personsErr, dateErr, timeErr].forEach((el) => (el.textContent = ""));
-  [persons, date, time].forEach((el) => {
-    if (el) el.classList.remove("invalid");
-  });
-
-  let hasError = false;
-
-  // PERSONS
-  if (!persons || !persons.value) {
-    personsErr.textContent = "Please select number of persons.";
-    if (persons) persons.classList.add("invalid");
-    hasError = true;
-  }
-
-  // DATE
-  if (!date || !date.value) {
-    dateErr.textContent = "Please select a date.";
-    if (date) date.classList.add("invalid");
-    hasError = true;
-  } else {
-    const selected = new Date(date.value);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-
-    const selectedMonth = selected.getMonth();
-    const selectedYear = selected.getFullYear();
-    const selectedDay = selected.getDate();
-
-    if (selected < today) {
-      dateErr.textContent = "Past dates are not allowed.";
-      date.classList.add("invalid");
-      hasError = true;
-    } else if (
-      selectedMonth !== currentMonth ||
-      selectedYear !== currentYear
-    ) {
-      dateErr.textContent = "Please select a date in the current month.";
-      date.classList.add("invalid");
-      hasError = true;
-    } else if (!barber.availability.includes(selectedDay)) {
-      dateErr.textContent = "This barber is not available on this date.";
-      date.classList.add("invalid");
-      hasError = true;
-    }
-  }
-
-  // TIME - Add past time validation
-  if (!time || !time.value) {
-    timeErr.textContent = "Please select a time.";
-    if (time) time.classList.add("invalid");
-    hasError = true;
-  } else if (date && date.value) {
-    // Check if selected time has passed
-    if (!isTimeSlotValid(date.value, time.value)) {
-      timeErr.textContent = "This time slot has already passed. Please select a future time.";
-      time.classList.add("invalid");
-      hasError = true;
-    }
-  }
-
-  if (hasError) return;
-
-  // Prevent double booking
-  if (isSlotBooked(barberId, date.value, time.value)) {
-    dateErr.textContent = "This time slot has already been booked.";
-    date.classList.add("invalid");
-    time.classList.add("invalid");
-    return;
-  }
-
-  // Save booking temporarily (lock the slot)
-  const amount = Number(
-    document
-      .getElementById("totalAmount")
-      .textContent.replace(/[₦,]/g, "")
-  );
-
-  saveBooking({
-    barberId,
-    date: date.value,
-    time: time.value,
-    persons: persons.value,
-    amount,
-    status: "pending",
-    createdAt: Date.now(),
-  });
-
-  localStorage.setItem("pendingPaymentAmount", amount);
-
-  closeBookingModal();
-  openPaymentModal();
-});
-
-
-// Function to reset booking form
-function resetBookingForm() {
-  const persons = document.getElementById("personsSelect");
-  const date = document.getElementById("bookingDate");
-  const time = document.getElementById("bookingTime");
-  
-  if (persons) persons.value = "";
-  if (date) {
-    const today = new Date().toISOString().split("T")[0];
-    date.value = today;
-  }
-  if (time) time.innerHTML = '<option value="">Choose a time slot</option>';
-  
-  // Reset errors
-  document.querySelectorAll('.error-text').forEach(el => el.textContent = '');
-  document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
-  
-  // Reset amount
-  document.getElementById("totalAmount").textContent = "₦0";
-}
-
-
-
-
-
-function generateTimeSlotsForDate(selectedDate) {
-  const select = document.getElementById("bookingTime");
-  if (!select) return;
-
-  select.innerHTML = `<option value="">Choose a time slot</option>`;
-  
-  // Get barber working hours
-  const barber = barbers[barberId];
-  const workingHours = barber?.workingHours?.[0] || { start: "07:00", end: "22:00" };
-  const [startH, startM] = workingHours.start.split(":").map(Number);
-  const [endH, endM] = workingHours.end.split(":").map(Number);
-  
-  const today = new Date().toISOString().split("T")[0];
-  const isToday = selectedDate === today;
-  
-  let currentHour = 0;
-  let currentMinute = 0;
-  
-  if (isToday) {
-    const now = new Date();
-    currentHour = now.getHours();
-    currentMinute = now.getMinutes();
-  }
-
-  let h = startH;
-  let m = startM;
-  const interval = 45; // 45 minutes per appointment
-
-  while (h < endH || (h === endH && m + interval <= endM)) {
-    const startTime = formatTime24to12(h, m);
-    
-    // Check if this time slot has passed (only for today)
-    let isPastTime = false;
-    if (isToday) {
-      // Compare with current time
-      if (h < currentHour || (h === currentHour && m < currentMinute)) {
-        isPastTime = true;
-      }
-    }
-
-    let endMinutes = h * 60 + m + interval;
-    let endHour = Math.floor(endMinutes / 60);
-    let endMin = endMinutes % 60;
-
-    const endTime = formatTime24to12(endHour, endMin);
-
-    const label = `${startTime} – ${endTime}`;
-
-    const option = document.createElement("option");
-    option.value = label;
-    
-    if (isPastTime) {
-      option.disabled = true;
-      option.textContent = `${label} (Passed)`;
-      option.style.color = "#ccc";
-    } else {
-      option.textContent = label;
-    }
-    
-    select.appendChild(option);
-
-    m += interval;
-    if (m >= 60) {
-      h += Math.floor(m / 60);
-      m = m % 60;
-    }
-  }
-  
-  // If all slots are disabled for today, show a message
-  if (isToday) {
-    const enabledOptions = Array.from(select.options).filter(opt => !opt.disabled && opt.value);
-    if (enabledOptions.length === 0) {
-      select.innerHTML = `<option value="">No available slots for today</option>`;
-      select.disabled = true;
-    } else {
-      select.disabled = false;
-    }
-  } else {
-    // For future dates, all slots should be available
-    select.disabled = false;
-  }
-}
-
-// Helper function to format time in 12-hour format
-function formatTime24to12(hour, minute) {
-  const h = hour % 12 === 0 ? 12 : hour % 12;
-  const m = minute.toString().padStart(2, "0");
-  const ampm = hour >= 12 ? "PM" : "AM";
-  return `${h}:${m} ${ampm}`;
-}
-
-
-function isTimeSlotValid(selectedDate, selectedTime) {
-  const today = new Date().toISOString().split("T")[0];
-  
-  // If not today, any future time is valid
-  if (selectedDate !== today) {
-    return true;
-  }
-  
-  // If today, check if time has passed
-  const now = new Date();
-  
-  // Parse the time range (e.g., "2:30 PM – 3:15 PM")
-  const [timeRange] = selectedTime.split(" – ");
-  const timeMatch = timeRange.match(/(\d+):(\d+)\s*(AM|PM)/i);
-  
-  if (!timeMatch) return true; // If we can't parse, assume valid
-  
-  let [_, hour, minute, ampm] = timeMatch;
-  hour = parseInt(hour);
-  minute = parseInt(minute);
-  
-  // Convert to 24-hour format
-  if (ampm.toUpperCase() === "PM" && hour !== 12) {
-    hour += 12;
-  } else if (ampm.toUpperCase() === "AM" && hour === 12) {
-    hour = 0;
-  }
-  
-  // Check if selected time has passed
-  if (hour < now.getHours()) {
-    return false;
-  } else if (hour === now.getHours() && minute <= now.getMinutes()) {
-    return false;
-  }
-  
-  return true;
-}
-
-function formatTime24to12(hour, minute) {
-  const h = hour % 12 === 0 ? 12 : hour % 12;
-  const m = minute.toString().padStart(2, "0");
-  const ampm = hour >= 12 ? "PM" : "AM";
-  return `${h}:${m} ${ampm}`;
-}
-
-  // Call when booking modal opens
-  document.addEventListener("click", (e) => {
-    if (e.target.classList.contains("book-service-btn")) {
-      generateTimeSlots("07:00", "22:00", 45);
-    }
-  });
-
-
-
-      // Booking storage helpers
-      function getBookings() {
-        return JSON.parse(localStorage.getItem("bookings")) || [];
-      }
-
-      function saveBooking(booking) {
-        const bookings = getBookings();
-        bookings.push(booking);
-        localStorage.setItem("bookings", JSON.stringify(bookings));
-      }
-
-      function isSlotBooked(barberId, date, time) {
-        const bookings = getBookings();
-        return bookings.some(
-          (b) =>
-            b.barberId === barberId &&
-            b.date === date &&
-            b.time === time &&
-            b.status !== "cancelled"
-        );
-      }
-
-
-      function clearErrorsOnInput() {
-  const persons = document.getElementById("personsSelect");
-  const date = document.getElementById("bookingDate");
-  const time = document.getElementById("bookingTime");
-  
-  if (persons) {
-    persons.addEventListener("change", function() {
-      if (this.value) {
-        this.classList.remove("invalid");
-        document.getElementById("personsError").textContent = "";
-      }
-    });
-  }
-  
-  if (date) {
-    date.addEventListener("change", function() {
-      if (this.value) {
-        this.classList.remove("invalid");
-        document.getElementById("dateError").textContent = "";
-      }
-    });
-  }
-  
-  if (time) {
-    time.addEventListener("change", function() {
-      if (this.value) {
-        this.classList.remove("invalid");
-        document.getElementById("timeError").textContent = "";
-      }
-    });
-  }
-}
-
-      // Payment modal open and close function
-      function openPaymentModal() {
-        const paymentModal = document.getElementById("paymentModal");
-        const paymentBtn = document.getElementById("paymentBtn");
-
-        if (!paymentModal) return;
-
-        const amount =
-          Number(localStorage.getItem("pendingPaymentAmount")) || 0;
-
-        paymentBtn.textContent = `Payment ₦${amount.toLocaleString()}`;
-
-        paymentModal.classList.add("open");
-        paymentModal.setAttribute("aria-hidden", "false");
-        document.body.style.overflow = "hidden";
-      }
-
-      function closePaymentModal() {
-        const paymentModal = document.getElementById("paymentModal");
-        if (!paymentModal) return;
-
-        paymentModal.classList.remove("open");
-        paymentModal.setAttribute("aria-hidden", "true");
-        document.body.style.overflow = "";
-      }
-
-      document
-        .getElementById("paymentModal")
-        ?.addEventListener("click", (e) => {
-          if (e.target.id === "paymentModal") {
-            closePaymentModal();
+      // Load reviews from localStorage on page load
+      window.addEventListener('DOMContentLoaded', () => {
+        barbers[barberId].reviews.forEach((review, index) => {
+          const savedReview = localStorage.getItem(`barber_${barberId}_review_${index}`);
+          if (savedReview) {
+            barbers[barberId].reviews[index] = JSON.parse(savedReview);
           }
         });
-
-      document.addEventListener("click", (e) => {
-        const paymentModal = document.getElementById("paymentModal");
-        const paymentBox = paymentModal?.querySelector(".booking-box");
-
-        if (!paymentModal?.classList.contains("open")) return;
-
-        // If click is on overlay (outside modal box)
-        if (
-          e.target.classList.contains("booking-overlay") &&
-          paymentModal.contains(e.target)
-        ) {
-          closePaymentModal();
-        }
       });
-
-      // logic for either card or transfer
-      document.addEventListener("change", (e) => {
-        if (e.target.name !== "paymentMethod") return;
-
-        const card = document.getElementById("cardPayment");
-        const transfer = document.getElementById("bankTransferPayment");
-
-        if (e.target.value === "card") {
-          card.style.display = "block";
-          transfer.style.display = "none";
-        } else {
-          card.style.display = "none";
-          transfer.style.display = "block";
-        }
-      });
-
-      document.getElementById("paymentBtn").addEventListener("click", () => {
-  const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
-
-  // Find last pending booking
-  const pendingBooking = bookings
-    .slice()
-    .reverse()
-    .find((b) => b.status === "pending");
-
-  if (!pendingBooking) {
-    alert("No pending booking found");
-    return;
-  }
-
-  // Simulate payment success
-  pendingBooking.status = "completed";
-  pendingBooking.paidAt = new Date().toISOString();
-
-  localStorage.setItem("bookings", JSON.stringify(bookings));
-
-  notifyBookingConfirmed(barbers[barberId].name, pendingBooking.barberId);
-
-  scheduleBookingReminders({
-  id: pendingBooking.barberId,
-  datetime: `${pendingBooking.date}T${pendingBooking.time.split(" – ")[0]}`
-});
-
- notifyPaymentSuccess(pendingBooking.amount, "TRIM-" + Date.now());
-
-
-  // Close modal & redirect
-  closePaymentModal();
-  window.location.href = "booking.html";
-});
-
-function updateAllAvatars() {
-  const avatar = localStorage.getItem("trimly_avatar");
-  if (!avatar) return;
-
-  document.querySelectorAll(".avatar").forEach((el) => {
-    el.style.backgroundImage = `url(${avatar})`;
-    el.style.backgroundSize = "cover";
-    el.style.backgroundPosition = "center";
-    el.textContent = ""; // remove initials
-  });
-}
-
-
-// Function to setup modal event listeners
-function setupModalEventListeners() {
-  // Close modal when clicking X button
-  const closeBtn = document.getElementById("closeBooking");
-  if (closeBtn) {
-    closeBtn.onclick = function() {
-      closeBookingModal();
-    };
-  }
-  
-  // Close modal when clicking Cancel button
-  const cancelBtn = document.querySelector(".cancelBooking");
-  if (cancelBtn) {
-    cancelBtn.onclick = function() {
-      closeBookingModal();
-    };
-  }
-  
-  // Close modal when clicking outside (on overlay)
-  const overlay = document.querySelector("#bookingModal .booking-overlay");
-  if (overlay) {
-    overlay.onclick = function(e) {
-      if (e.target === overlay) {
-        closeBookingModal();
-      }
-    };
-  }
-  
-  // Close modal with Escape key
-  document.addEventListener('keydown', function(e) {
-    const modal = document.getElementById("bookingModal");
-    if (e.key === 'Escape' && modal && modal.classList.contains('open')) {
-      closeBookingModal();
-    }
-  });
-  
-  // Clear errors when user interacts with inputs
-  clearErrorsOnInput();
-  
-  // Date change listener
-  const dateInput = document.getElementById("bookingDate");
-  if (dateInput) {
-    dateInput.onchange = function() {
-      const selectedDate = this.value;
-      generateTimeSlotsForDate(selectedDate);
-      
-      // Clear errors
-      this.classList.remove("invalid");
-      document.getElementById("dateError").textContent = "";
-      
-      // Clear time error too
-      const timeInput = document.getElementById("bookingTime");
-      if (timeInput) {
-        timeInput.classList.remove("invalid");
-        document.getElementById("timeError").textContent = "";
-      }
-    };
-  }
-}
-
-
-// Function to close booking modal
-function closeBookingModal() {
-  const modal = document.getElementById("bookingModal");
-  if (modal) {
-    modal.classList.remove("open");
-    resetBookingForm();
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  updateAllAvatars();
-});
 
     </script>
-    <script src="./TrimlyNotifications.js"></script>
+    
+ <script src="./TrimlyNotifications.js"></script>
 
 
     <div id="toast"></div>
@@ -1566,5 +1611,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </form>
       </div>
     </div>
+
   </body>
 </html>
+

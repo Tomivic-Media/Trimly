@@ -6,7 +6,7 @@
     <link
       rel="icon"
       type="image/png"
-      href="trimly logo.svg"
+      href="/STATIC/Images/icons/trimly logo.svg"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Sora:wght@100..800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="Home.css" />
+    <link rel="stylesheet" href="/STATIC/CSS/Home.css" />
     <title>Home</title>
   </head>
   <body>
@@ -28,7 +28,7 @@
             <span class="logo-text">Trimly</span>
             <!-- note: there are two visual toggles (sidebar icon & hamburger), JS handles both -->
             <i class="nav-icon sidebar-toggle-icon">
-              <img src="trimly logo.svg" alt="trimly logo" />
+              <img src="/STATIC/Images/icons/trimly logo.svg" alt="" />
             </i>
           </div>
         </div>
@@ -36,31 +36,31 @@
         <nav class="nav-list">
           <a href="Home.html" class="nav-item active">
             <i class="nav-icon"
-              ><img src="Vector.svg" alt="Home logo"
+              ><img src="/STATIC/Images/icons/Vector.svg" alt=""
             /></i>
             <span class="nav-label">Home</span>
           </a>
           <a href="favourite.html" class="nav-item">
             <i class="nav-icon"
-              ><img src="mynaui_heart.svg" alt="Favourite logo"
+              ><img src="/STATIC/Images/icons/mynaui_heart.svg" alt=""
             /></i>
             <span class="nav-label">Favourite</span>
           </a>
           <a href="message.html" class="nav-item">
             <i class="nav-icon"
-              ><img src="message.svg" alt="message logo"
+              ><img src="/STATIC/Images/icons/message.svg" alt=""
             /></i>
             <span class="nav-label">Messages</span>
           </a>
           <a href="booking.html" class="nav-item">
             <i class="nav-icon"
-              ><img src="bookings.svg" alt="booking logo"
+              ><img src="/STATIC/Images/icons/bookings.svg" alt=""
             /></i>
             <span class="nav-label">Bookings</span>
           </a>
           <a href="setting.html" class="nav-item">
             <i class="nav-icon"
-              ><img src="settings.svg" alt="settings logo"
+              ><img src="/STATIC/Images/icons/settings.svg" alt=""
             /></i>
             <span class="nav-label">Settings</span>
           </a>
@@ -68,16 +68,16 @@
 
         <div class="social-icons">
           <a href="#"
-            ><i><img src="fb.svg" alt="Facebook logo" /></i
+            ><i><img src="/STATIC/Images/fb.svg" alt="" /></i
           ></a>
           <a href="#"
-            ><i><img src="ig.svg" alt="Instagram logo" /></i
+            ><i><img src="/STATIC/Images/icons/ig.svg" alt="" /></i
           ></a>
           <a href="#"
-            ><i><img src="x.svg" alt="X logo" /></i
+            ><i><img src="/STATIC/Images/icons/x.svg" alt="" /></i
           ></a>
           <a href="#"
-            ><i><img src="messenger.svg" alt="messenger logo" /></i
+            ><i><img src="/STATIC/Images/icons/messenger.svg" alt="" /></i
           ></a>
         </div>
       </aside>
@@ -88,7 +88,7 @@
         class="hamburger-btn"
         aria-label="Toggle sidebar"
       >
-        <img src="trimly logo.svg" alt="Hamburger" />
+        <img src="/STATIC/Images/icons/trimly logo.svg" alt="menu" />
       </button>
 
       <!-- MAIN -->
@@ -96,7 +96,7 @@
         <header class="top-bar">
           <div class="search-container">
             <i style="font-size: 18px; color: rgba(0, 0, 0, 1)"
-              ><img src="search.svg" alt="Search"
+              ><img src="/STATIC/Images/search.svg" alt=""
             /></i>
             <input
               type="text"
@@ -110,7 +110,7 @@
           <div class="notificationwithprofile">
             <div class="notifications">
               <img
-                src="notificatiion.svg"
+                src="/STATIC/Images/icons/notificatiion.svg"
                 alt="Notifications"
               />
               <span
@@ -132,8 +132,8 @@
             <div class="filters">
               <div class="select-wrapper">
                 <img
-                  src="location.svg"
-                  alt="Location filter"
+                  src="/STATIC/Images/icons/location.svg"
+                  alt=""
                   class="select-icon"
                 />
                 <select
@@ -150,8 +150,8 @@
 
               <div class="select-wrapper">
                 <img
-                  src="verification.svg"
-                  alt="Rating filter"
+                  src="/STATIC/Images/icons/verification.svg"
+                  alt=""
                   class="select-icon"
                 />
                 <select
@@ -168,8 +168,8 @@
 
               <div class="select-wrapper">
                 <img
-                  src="tdesign_money.svg"
-                  alt="Price filter"
+                  src="/STATIC/Images/icons/tdesign_money.svg"
+                  alt=""
                   class="select-icon"
                 />
                 <select
@@ -195,8 +195,8 @@
 
               <div class="select-wrapper">
                 <img
-                  src="verification.svg"
-                  alt="Verification logo"
+                  src="/STATIC/Images/icons/verification.svg"
+                  alt=""
                   class="select-icon"
                 />
                 <select
@@ -229,64 +229,69 @@
 
     <script>
       /* ----------------------------
-                 DATA: barbers (with verified)
-                 ---------------------------- */
-      const barbers = {
+           DATA: barbers (with verified)
+           ---------------------------- */
+
+      // Function to calculate average rating
+      function calculateAverageRating(reviews) {
+        if (!reviews || reviews.length === 0) return 0;
+        const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+        return Math.round((total / reviews.length) * 10) / 10; // Round to 1 decimal
+      }
+
+      // Original barbers data WITHOUT hardcoded ratings
+      const originalBarbers = {
         1: {
           id: "1",
           name: "Ariyo barbing services",
-          img: "e3e57f5dd5ab20b760d3f389da7910e955587728.jpg",
+          img: "/STATIC/Images/e3e57f5dd5ab20b760d3f389da7910e955587728.jpg",
           location: "Lagos",
-          rating: 4.8,
           amount: 5000,
           desc: "Premium Lagos barbershop known for sharp fades, afro grooming, and clean modern cuts.",
           verified: true,
           priceTier: "mid",
           availability: [17, 24, 19, 29, 27, 5, 1, 22, 6, 10],
-
           reviews: [
             {
               name: "David Adepoju",
-              avatar: "Frame review.png",
+              avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 5,
               date: "June 10, 2025",
               text: "Amazing service! My fade came out clean and sharp. Easily one of the best barbers in Lagos.",
             },
             {
               name: "Michael Femi",
-              avatar: "Frame review2.png",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 4,
               date: "June 5, 2025",
               text: "Good attention to detail. The shop was neat and he kept to time.",
             },
             {
               name: "Tunde Ilori",
-              avatar: "Frame review3.png",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 5,
               date: "May 28, 2025",
               text: "Best haircut I've had in months. Highly recommended.",
             },
           ],
-
           workingHours: [{ start: "07:00", end: "22:00" }],
+          // NO hardcoded rating here
         },
 
         2: {
           id: "2",
           name: "Fola barbing services",
-          img: "51dff4b5b6c4b24a89fc357e76ddb4bffa5f60cb.jpg",
+          img: "/STATIC/Images/51dff4b5b6c4b24a89fc357e76ddb4bffa5f60cb.jpg",
           location: "Abuja",
-          rating: 3.0,
           amount: 2500,
           desc: "Affordable neighborhood barbershop offering simple, clean haircuts at great value.",
           verified: false,
           priceTier: "low",
           availability: [16, 1, 3, 23, 7, 22, 19, 26, 25, 11],
-
           reviews: [
             {
               name: "Chibuzo Kingsley",
-              avatar: "Frame review.png",
+              avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 3,
               date: "May 12, 2025",
               text: "Decent cut. Could improve timing but overall fair.",
@@ -306,16 +311,15 @@
               text: "Cut was okay but not exactly what I asked for.",
             },
           ],
-
           workingHours: [{ start: "07:00", end: "22:00" }],
+          // NO hardcoded rating here
         },
 
         3: {
           id: "3",
           name: "Adebisi barbing services",
-          img: "fd5eaeb566eaee245f79cac02879dbca4d66fb74.jpg",
+          img: "/STATIC/Images/fd5eaeb566eaee245f79cac02879dbca4d66fb74.jpg",
           location: "Ibadan",
-          rating: 4.2,
           amount: 4000,
           desc: "Professional Ibadan barber specializing in detailed fades, beard trims, and styling.",
           verified: true,
@@ -324,149 +328,188 @@
           reviews: [
             {
               name: "Kunle Owolabi",
-              avatar: "Frame review.png",
+              avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 4,
               date: "June 2, 2025",
               text: "Very professional. My beard trim came out sharp.",
             },
             {
               name: "Samuel Peters",
-              avatar: "Frame review2.png",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 5,
               date: "May 27, 2025",
               text: "Excellent work. Definitely coming back.",
             },
             {
               name: "Ireti A.",
-              avatar: "Frame review3.png",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 4,
               date: "May 10, 2025",
               text: "Neat shop and good vibes. Loved the haircut.",
             },
           ],
-
           workingHours: [{ start: "07:00", end: "22:00" }],
+          // NO hardcoded rating here
         },
 
         4: {
           id: "4",
           name: "African barbing services",
-          img: "71954b1bf5bf641a949aa7d9565112e807cd9a25.jpg",
+          img: "/STATIC/Images/71954b1bf5bf641a949aa7d9565112e807cd9a25.jpg",
           location: "Ibadan",
-          rating: 4.0,
           amount: 6500,
           desc: "Luxury grooming experience with premium tools, skilled barbers, and stylish ambience.",
           verified: false,
           priceTier: "high",
           availability: [10, 12, 14, 16, 4, 13, 22, 15, 9, 1],
-
           reviews: [
             {
               name: "Precious Daniel",
-              avatar: "Frame review.png",
+              avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 4,
               date: "June 9, 2025",
               text: "Good service but a little pricey.",
             },
             {
               name: "Emeka U.",
-              avatar: "Frame review2.png",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 5,
               date: "June 1, 2025",
               text: "Great haircut, worth the money.",
             },
             {
               name: "Ola N.",
-              avatar: "Frame review3.png",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 3,
               date: "May 19, 2025",
               text: "Decent but expected a bit more for the price.",
             },
           ],
           workingHours: [{ start: "07:00", end: "22:00" }],
+          // NO hardcoded rating here
         },
 
         5: {
           id: "5",
           name: "Ayodele barbing services",
-          img: "89f0e267a3761a55a184609ef53967fc6beed6e6.jpg",
+          img: "/STATIC/Images/89f0e267a3761a55a184609ef53967fc6beed6e6.jpg",
           location: "Abuja",
-          rating: 3.5,
           amount: 3000,
           desc: "Quick and reliable barber service ideal for regular maintenance cuts and trims.",
           verified: false,
           priceTier: "low",
           availability: [8, 21, 16, 7, 28, 30, 1, 6, 24, 13],
-
           reviews: [
             {
               name: "Henry Okafor",
-              avatar: "Frame review.png",
+              avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 4,
               date: "June 3, 2025",
               text: "Affordable and clean cut. Good value.",
             },
             {
               name: "Sade Ojo",
-              avatar: "Frame review2.png",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 3,
               date: "May 25, 2025",
               text: "Okay haircut, nothing extraordinary.",
             },
             {
               name: "Daniel O.",
-              avatar: "Frame review3.png",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 5,
               date: "May 14, 2025",
               text: "Excellent job. Will be returning.",
             },
           ],
           workingHours: [{ start: "07:00", end: "22:00" }],
+          // NO hardcoded rating here
         },
 
         6: {
           id: "6",
           name: "Rise barbing services",
-          img: "7e4c3695e25ee081e122f0dac2c4f7c7b0c3ccce.jpg",
+          img: "/STATIC/Images/7e4c3695e25ee081e122f0dac2c4f7c7b0c3ccce.jpg",
           location: "Lagos",
-          rating: 4.8,
           amount: 8000,
           desc: "High-end barbershop delivering premium fades, luxury grooming, and elite service.",
           verified: true,
           priceTier: "high",
           availability: [21, 13, 11, 28, 22, 10, 5, 2, 18, 7],
-
           reviews: [
             {
               name: "Favour Chinedu",
-              avatar: "Frame review.png",
+              avatar: "/STATIC/Images/icons/Frame review.png",
               rating: 5,
               date: "June 8, 2025",
               text: "Top-notch! The fade was perfect and the service was premium.",
             },
             {
               name: "Olawale Ade",
-              avatar: "Frame review2.png",
+              avatar: "/STATIC/Images/icons/Frame review2.png",
               rating: 4,
               date: "June 4, 2025",
               text: "Loved the experience, great ambience.",
             },
             {
               name: "Kelvin U.",
-              avatar: "Frame review3.png",
+              avatar: "/STATIC/Images/icons/Frame review3.png",
               rating: 5,
               date: "May 29, 2025",
               text: "Perfect haircut every time. Highly skilled barber.",
             },
           ],
-
           workingHours: [{ start: "07:00", end: "22:00" }],
+          // NO hardcoded rating here
         },
       };
 
+      // Function to get barber with current rating
+      function getBarberWithCurrentRating(id, barberData) {
+        // Get saved data from localStorage
+        const savedData =
+          JSON.parse(localStorage.getItem("all_barbers_data")) || {};
+        const barberSavedData = savedData[id];
+
+        let finalReviews = barberData.reviews;
+        let finalRating;
+
+        if (barberSavedData && barberSavedData.reviews) {
+          // Use saved reviews if available
+          finalReviews = barberSavedData.reviews;
+          finalRating = barberSavedData.rating;
+        } else {
+          // Calculate from original reviews
+          finalRating = calculateAverageRating(barberData.reviews);
+        }
+
+        return {
+          ...barberData,
+          reviews: finalReviews,
+          rating: finalRating || calculateAverageRating(finalReviews),
+        };
+      }
+
+      // Function to get all barbers with current ratings
+      function getAllBarbers() {
+        const barbersWithRatings = {};
+
+        Object.keys(originalBarbers).forEach((id) => {
+          barbersWithRatings[id] = getBarberWithCurrentRating(
+            id,
+            originalBarbers[id]
+          );
+        });
+
+        return barbersWithRatings;
+      }
+
+      // Current barbers data
+      let barbers = getAllBarbers();
+
       /* ----------------------------
-                 Utilities & State
-                 ---------------------------- */
+           Utilities & State
+           ---------------------------- */
       const gridMount = document.getElementById("barber-grid-mount");
       const searchInput = document.getElementById("searchInput");
       const bc =
@@ -493,67 +536,69 @@
       }
 
       /* ----------------------------
-                 RENDER: single barber card
-                 ---------------------------- */
+           RENDER: single barber card
+           ---------------------------- */
       function barberCardHTML(data) {
+        // Get current rating - it's already calculated in getBarberWithCurrentRating
+        const currentRating = data.rating || 0;
+
         const fav = isFavourite(data.id);
         const verifiedTick = data.verified
-          ? `<img src="verification-tick.svg" alt="verified tick" style="width:16px; vertical-align:middle; margin-left:6px;">`
+          ? `<img src="/STATIC/Images/icons/verification-tick.svg" alt="verified tick" style="width:16px; vertical-align:middle; margin-left:6px;">`
           : "";
 
-        // Use data-id attributes and a fav button with dataset for delegation
         return `
-                  <a href="barber.html?id=${
-                    data.id
-                  }" style="display:block; color:inherit; text-decoration:none;">
-                    <article class="barber-card" data-id="${data.id}">
-                      <div class="card-image-wrapper">
-                        <img src="${
-                          data.img
-                        }" class="card-image" alt="${escapeHtml(data.name)}">
-                        <div class="status-dot"><div class="available" title="Available"></div></div>
-
-                        <button class="fav-btn" aria-label="${
-                          fav ? "Remove from favourites" : "Add to favourites"
-                        }" data-action="toggle-fav" data-id="${data.id}">
-                          <img src="${
-                            fav
-                              ? "Frame 1000009116 (1).png"
-                              : "Frame 1000009115.png"
-                          }" alt="heart">
-                        </button>
-                      </div>
-
-                      <div class="card-info">
-                        <div class="card-title" style="display:flex; gap:12px; align-items:flex-start;">
-                          <div class="barber-profile">
-                            <i class="verified-badge"><img src="barber-profile.png" alt="verified badge"></i>
-                          </div>
-
-                          <div class="barber-details" style="flex:1;">
-                            <h3 style="margin:0; font-size:1.05rem;">
-                              ${escapeHtml(data.name)} ${verifiedTick}
-                            </h3>
-                            <div class="card-meta">
-                              <span><i><img src="star.svg" alt="star" style="width:14px"></i> ${
-                                data.rating
-                              }</span>
-                              <span style="margin-left:12px;"><i><img src="typcn_location.svg" alt="location" style="width:14px"></i> ${
-                                data.location
-                              }</span>
-                              <span style="margin-left:12px; color:#888;">• ${capitalize(
-                                data.priceTier
-                              )}</span>
-                            </div>
-                            <p class="card-desc" style="margin-top:8px; color:#444;">${escapeHtml(
-                              data.desc
-                            )}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </article>
-                  </a>
-                `;
+    <a href="barber.html?id=${
+      data.id
+    }" style="display:block; color:inherit; text-decoration:none;">
+      <article class="barber-card" data-id="${data.id}">
+        <div class="card-image-wrapper">
+          <img src="${data.img}" class="card-image" alt="${escapeHtml(
+          data.name
+        )}">
+          <div class="status-dot"><div class="available" title="Available"></div></div>
+          
+          <button class="fav-btn" aria-label="${
+            fav ? "Remove from favourites" : "Add to favourites"
+          }" data-action="toggle-fav" data-id="${data.id}">
+            <img src="${
+              fav
+                ? "/STATIC/Images/icons/Frame 1000009116 (1).png"
+                : "/STATIC/Images/icons/Frame 1000009115.png"
+            }" alt="heart">
+          </button>
+        </div>
+        
+        <div class="card-info">
+          <div class="card-title" style="display:flex; gap:12px; align-items:flex-start;">
+            <div class="barber-profile">
+              <i class="verified-badge"><img src="/STATIC/Images/icons/barber-profile.png" alt=""></i>
+            </div>
+            
+            <div class="barber-details" style="flex:1;">
+              <h3 style="margin:0; font-size:1.05rem;">
+                ${escapeHtml(data.name)} ${verifiedTick}
+              </h3>
+              <div class="card-meta">
+                <span><i><img src="/STATIC/Images/icons/star.svg" alt="star" style="width:14px"></i> ${currentRating.toFixed(
+                  1
+                )}</span>
+                <span style="margin-left:12px;"><i><img src="/STATIC/Images/icons/typcn_location.svg" alt="location" style="width:14px"></i> ${
+                  data.location
+                }</span>
+                <span style="margin-left:12px; color:#888;">• ${capitalize(
+                  data.priceTier
+                )}</span>
+              </div>
+              <p class="card-desc" style="margin-top:8px; color:#444;">${escapeHtml(
+                data.desc
+              )}</p>
+            </div>
+          </div>
+        </div>
+      </article>
+    </a>
+  `;
       }
 
       /* tiny helpers */
@@ -564,6 +609,7 @@
             .toUpperCase() + String(s || "").slice(1)
         );
       }
+
       function escapeHtml(str) {
         return String(str)
           .replace(/&/g, "&amp;")
@@ -574,8 +620,8 @@
       }
 
       /* ----------------------------
-                 FILTER + SEARCH + RENDER
-                 ---------------------------- */
+           FILTER + SEARCH + RENDER
+           ---------------------------- */
       function getFilterValues() {
         return {
           location: document.getElementById("filter-location").value || "",
@@ -589,6 +635,9 @@
       }
 
       function applyFiltersAndRender() {
+        // Refresh barbers data to get latest ratings
+        barbers = getAllBarbers();
+
         const { location, rating, price, date, verification, query } =
           getFilterValues();
 
@@ -600,7 +649,7 @@
           if (location && b.location.toLowerCase() !== location.toLowerCase())
             return false;
 
-          // rating
+          // rating - use dynamic rating from barbers object
           if (rating && b.rating < Number(rating)) return false;
 
           // price
@@ -614,7 +663,6 @@
 
           // verification
           if (verification === "verified" && !b.verified) return false;
-          // verification === "all" or "" => accept all
 
           // search query
           if (query) {
@@ -646,19 +694,9 @@
         gridMount.innerHTML = html;
       }
 
-       function showToast(text) {
-        const toast = document.getElementById("toast");
-        if (!toast) return;
-        toast.textContent = text;
-        toast.classList.add("show");
-        setTimeout(() => {
-          toast.classList.remove("show");
-        }, 2000);
-      }
-
       /* ----------------------------
-                 FAVOURITES: toggle + update visuals
-                 ---------------------------- */
+           FAVOURITES: toggle + update visuals
+           ---------------------------- */
       function toggleFavouriteById(id) {
         id = String(id);
         let favs = getFavourites();
@@ -685,10 +723,10 @@
             const img = btn.querySelector("img");
             if (!img) return;
             if (favs.includes(String(id))) {
-              img.src = "Frame 1000009116 (1).png";
+              img.src = "/STATIC/Images/icons/Frame 1000009116 (1).png";
               btn.setAttribute("aria-label", "Remove from favourites");
             } else {
-              img.src = "Frame 1000009115.png";
+              img.src = "/STATIC/Images/icons/Frame 1000009115.png";
               btn.setAttribute("aria-label", "Add to favourites");
             }
           });
@@ -705,8 +743,8 @@
       });
 
       /* ----------------------------
-                 FILTER / SEARCH listeners
-                 ---------------------------- */
+           FILTER / SEARCH listeners
+           ---------------------------- */
       [
         "filter-location",
         "filter-rating",
@@ -721,7 +759,7 @@
           });
       });
 
-      //Filter date
+      // Filter date
       document.getElementById("filter-date").addEventListener("change", () => {
         applyFiltersAndRender();
         updateHeartIcons();
@@ -747,17 +785,16 @@
         });
 
       /* ----------------------------
-                 SIDEBAR: toggle & overlay logic
-                 ---------------------------- */
+           SIDEBAR: toggle & overlay logic
+           ---------------------------- */
       const sidebar = document.getElementById("sidebar");
       const hamburgerBtn = document.getElementById("hamburger-btn");
       const overlay = document.getElementById("mobile-overlay");
-      // multiple toggle icons might exist
+
       function getSidebarToggleElements() {
         const arr = Array.from(
           document.querySelectorAll(".sidebar-toggle-icon")
         );
-        // also include hamburger icon if it should toggle collapsed state on desktop
         return arr;
       }
 
@@ -801,15 +838,50 @@
       });
 
       /* ----------------------------
-                 Cross-tab sync: storage + BroadcastChannel + visibility/pageshow
-                 ---------------------------- */
+           Rating update listeners
+           ---------------------------- */
 
-      // storage event (fires in other windows)
+      // Listen for storage changes (when reviews are added on barber page)
+      window.addEventListener("storage", (event) => {
+        if (event.key === "all_barbers_data") {
+          // Refresh barbers data when reviews are updated
+          barbers = getAllBarbers();
+          applyFiltersAndRender();
+        }
+      });
+
+      // Also listen for custom events if you implement them on barber page
+      window.addEventListener("barberRatingUpdated", () => {
+        barbers = getAllBarbers();
+        applyFiltersAndRender();
+      });
+
+      // Refresh on page visibility change
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+          barbers = getAllBarbers();
+          applyFiltersAndRender();
+        }
+      });
+
+      // When page becomes visible again or is restored from bfcache
+      window.addEventListener("pageshow", () => {
+        barbers = getAllBarbers();
+        applyFiltersAndRender();
+        updateHeartIcons();
+      });
+
+      // Cross-tab sync: storage + BroadcastChannel
       window.addEventListener("storage", (e) => {
         if (e.key === "favourites" || e.key === "favourites_updated") {
-          // If filters/search are active, re-apply them; else re-render grid
           applyFiltersAndRender();
           updateHeartIcons();
+        }
+
+        // Add this for rating updates too
+        if (e.key === "all_barbers_data") {
+          barbers = getAllBarbers();
+          applyFiltersAndRender();
         }
       });
 
@@ -820,24 +892,18 @@
             applyFiltersAndRender();
             updateHeartIcons();
           }
+
+          // Add this for barber updates
+          if (ev?.data?.type === "barber_updated") {
+            barbers = getAllBarbers();
+            applyFiltersAndRender();
+          }
         });
       }
 
-      // When page becomes visible again or is restored from bfcache
-      window.addEventListener("pageshow", () => {
-        applyFiltersAndRender();
-        updateHeartIcons();
-      });
-      document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) {
-          applyFiltersAndRender();
-          updateHeartIcons();
-        }
-      });
-
       /* ----------------------------
-                 Initialization
-                 ---------------------------- */
+           Initialization
+           ---------------------------- */
       // initial render
       applyFiltersAndRender();
       updateHeartIcons();
@@ -847,6 +913,8 @@
         applyFiltersAndRender,
         toggleFavouriteById,
         getFavourites,
+        getAllBarbers,
+        calculateAverageRating,
       };
 
       function isAvailableToday(barber) {
@@ -866,12 +934,40 @@
         });
       }
 
+      // Toast function (add if missing)
+      /*  function showToast(text) {
+        let toast = document.getElementById("toast");
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.id = "toast";
+          toast.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #00A859;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      z-index: 1000;
+      display: none;
+      font-family: 'Geist', sans-serif;
+    `;
+          document.body.appendChild(toast);
+        }
+
+        toast.textContent = text;
+        toast.style.display = "block";
+
+        setTimeout(() => {
+          toast.style.display = "none";
+        }, 2000);
+      } */
+
       document.addEventListener("DOMContentLoaded", () => {
         updateAllAvatars();
       });
     </script>
-    <script src="TrimlyNotifications.js"></script>
+    <script src="./TrimlyNotifications.js"></script>
     <div id="toast" class="toast"></div>
   </body>
 </html>
-
